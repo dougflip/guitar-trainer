@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 
 import NoteRecognitionForm from "./components/note-recognition/NoteRecognitionForm";
 import { NoteRecognitionPlayer } from "@/components/note-recognition/NoteRecognitionPlayer";
+import { useWakeLock } from "react-screen-wake-lock";
 
 type ScreenState = "form" | "playing";
 
@@ -17,14 +18,18 @@ function App() {
     getDefaultNoteRecognitionConfig(),
   );
 
+  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
+
   function handleNoteRedFormSubmit(data: NoteRecognitionConfig) {
     setNoteRecConfig(data);
     setScreenState("playing");
+    requestWakeLock();
   }
 
   const handleOnEnd = useCallback(() => {
     setScreenState("form");
-  }, []);
+    releaseWakeLock();
+  }, [releaseWakeLock]);
 
   return (
     <div className="guitar-trainer-app">

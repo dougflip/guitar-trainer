@@ -1,0 +1,12 @@
+.nrp-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.nrp-note {
+  font-size: 20dvw;
+  line-height: 1;
+  /* dark 4 */
+  color: #424242;
+  font-weight: 800;
+}
