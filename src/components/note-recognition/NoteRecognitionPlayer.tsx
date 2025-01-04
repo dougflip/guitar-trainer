@@ -26,6 +26,7 @@ export function NoteRecognitionPlayer({
   useNote({
     frequency: noteFrequencies[note],
     duration: 750,
+    volume: config.noteVolume,
     enabled: config.playCurrentNote,
   });
 

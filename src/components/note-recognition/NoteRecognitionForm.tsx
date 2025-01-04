@@ -1,4 +1,4 @@
-import { Button, Switch, TextInput } from "@mantine/core";
+import { Button, Slider, Switch, TextInput } from "@mantine/core";
 
 import { NoteRecognitionConfig } from "@/core/note-recognition";
 import React from "react";
@@ -16,13 +16,14 @@ function NoteRecognitionForm({ data, onSubmit }: NoteRecognitionFormProps) {
   const [playCurrentNote, setPlayCurrentNote] = useInputState<boolean>(
     data.playCurrentNote,
   );
+  const [noteVolume, setNoteVolume] = useInputState<number>(data.noteVolume);
   const [totalDuration, setTotalDuration] = useInputState<number>(
     data.totalDuration,
   );
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit({ noteDuration, totalDuration, playCurrentNote });
+    onSubmit({ noteDuration, totalDuration, playCurrentNote, noteVolume });
   };
 
   return (
@@ -50,6 +51,18 @@ function NoteRecognitionForm({ data, onSubmit }: NoteRecognitionFormProps) {
         checked={playCurrentNote}
         onChange={setPlayCurrentNote}
         size="lg"
+      />
+      <Slider
+        label={(x) => `Volume: ${Math.floor(x)}`}
+        value={noteVolume * 100}
+        onChange={(x) => setNoteVolume(x / 100)}
+        disabled={!playCurrentNote}
+        step={5}
+        marks={[
+          { value: 0, label: "0" },
+          { value: 50, label: "50" },
+          { value: 100, label: "100" },
+        ]}
       />
       <Button type="submit">Save</Button>
     </form>
