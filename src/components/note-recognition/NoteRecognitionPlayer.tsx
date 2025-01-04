@@ -1,12 +1,12 @@
 import "./NoteRecognitionPlayer.css";
 
 import { getRandomNote, noteFrequencies } from "@/core/notes";
-import { useEffect, useState } from "react";
 
 import { Button } from "@mantine/core";
 import { NoteRecognitionConfig } from "@/core/note-recognition";
 import { useInterval } from "@/hooks/useInterval";
 import { useNote } from "@/hooks/useNote";
+import { useState } from "react";
 
 type NoteRecognitionPlayerProps = {
   config: NoteRecognitionConfig;
