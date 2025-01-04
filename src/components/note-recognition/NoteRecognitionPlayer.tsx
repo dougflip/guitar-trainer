@@ -1,10 +1,12 @@
 import "./NoteRecognitionPlayer.css";
 
+import { getRandomNote, noteFrequencies } from "@/core/notes";
+import { useEffect, useState } from "react";
+
 import { Button } from "@mantine/core";
 import { NoteRecognitionConfig } from "@/core/note-recognition";
-import { getRandomNote } from "@/core/notes";
 import { useInterval } from "@/hooks/useInterval";
-import { useState } from "react";
+import { useNote } from "@/hooks/useNote";
 
 type NoteRecognitionPlayerProps = {
   config: NoteRecognitionConfig;
@@ -20,6 +22,12 @@ export function NoteRecognitionPlayer({
   useInterval(() => {
     setNote(getRandomNote());
   }, config.noteDuration * 1000);
+
+  useNote({
+    frequency: noteFrequencies[note],
+    duration: 750,
+    enabled: config.playCurrentNote,
+  });
 
   // TODO: Maybe this moves up to the parent component?
   useInterval(onEnd, config.totalDuration * 1000);

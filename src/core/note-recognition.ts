@@ -1,5 +1,6 @@
 export type NoteRecognitionConfig = {
   noteDuration: number;
+  playCurrentNote: boolean;
   // TODO: Will this be common to all modules?
   totalDuration: number;
 
@@ -12,6 +13,7 @@ export type NoteRecognitionConfig = {
 export function getDefaultNoteRecognitionConfig(): NoteRecognitionConfig {
   return {
     noteDuration: 5,
+    playCurrentNote: false,
     totalDuration: 60,
   };
 }
