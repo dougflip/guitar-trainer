@@ -19,23 +19,18 @@ export function TrainingPlayer({ exercises, onEnd }: TrainingPlayerProps) {
 
   useEffect(() => {
     requestWakeLock();
-    // TODO: Need to understand how we can release this lock when the component is unmounted.
-    // return releaseWakeLock;
+    return () => {
+      releaseWakeLock();
+    };
   }, [requestWakeLock, releaseWakeLock]);
-
-  const handleTrainingEnd = useCallback(() => {
-    onEnd();
-    releaseWakeLock();
-  }, [onEnd, releaseWakeLock]);
 
   const handleOnExerciseEnd = useCallback(() => {
     if (currentExerciseIndex === exercises.length - 1) {
-      handleTrainingEnd();
-      return;
+      return onEnd();
     }
 
     setCurrentExerciseIndex((index) => index + 1);
-  }, [handleTrainingEnd, currentExerciseIndex, exercises]);
+  }, [currentExerciseIndex, exercises, onEnd]);
 
   return (
     <NoteRecognitionPlayer
