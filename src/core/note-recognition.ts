@@ -1,9 +1,11 @@
+import { Milliseconds } from "@/core/base";
+
 export type NoteRecognitionConfig = {
-  noteDuration: number;
+  noteDuration: Milliseconds;
   playCurrentNote: boolean;
   noteVolume: number;
   // TODO: Will this be common to all modules?
-  totalDuration: number;
+  totalDuration: Milliseconds;
 
   // can eventually customize notes - use a checkbox of all notes? dropdown of groupings?
   // notes: "all" | "natural" | "flats" | "sharps" | "enharmonics";
