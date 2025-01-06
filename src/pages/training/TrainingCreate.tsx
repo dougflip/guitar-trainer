@@ -1,4 +1,4 @@
-import { CloseIcon, Paper, Select } from "@mantine/core";
+import { Button, Select } from "@mantine/core";
 import {
   NoteRecognitionConfig,
   getDefaultNoteRecognitionConfig,
@@ -7,7 +7,10 @@ import {
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { Exercise } from "@/core/exercises";
 import NoteRecognitionForm from "@/components/note-recognition/NoteRecognitionForm";
+import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
 import { useState } from "react";
+
+type ScreenState = "exercise-select" | "exercise-form" | "playing";
 
 /**
  * Allows the use to build a training course comprised of a set of exercises.
@@ -16,16 +19,21 @@ import { useState } from "react";
  */
 export function TrainingCreatePage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [showNoteRec, setShowNoteRec] = useState(false);
+  const [screenState, setScreenState] =
+    useState<ScreenState>("exercise-select");
 
   const handleNoteRecSubmit = (config: NoteRecognitionConfig) => {
     setExercises([...exercises, { type: "note-recognition", config }]);
-    setShowNoteRec(false);
+    setScreenState("exercise-select");
+  };
+
+  const handleTrainingEnd = () => {
+    setScreenState("exercise-select");
   };
 
   return (
     <div>
-      {!showNoteRec && (
+      {screenState === "exercise-select" && (
         <>
           <h1>Create a Training Course</h1>
           <p>
@@ -34,27 +42,36 @@ export function TrainingCreatePage() {
           </p>
           <Select
             data={[{ label: "Note Recognition", value: "note-recognition" }]}
-            placeholder="Select exercise"
+            placeholder="Select an exercise"
             searchable={false}
             onChange={() => {
-              setShowNoteRec(true);
+              setScreenState("exercise-form");
             }}
           />
           {exercises.map((exercise, index) => (
             <DataListItem
+              key={index}
               symbol={index + 1}
               title="Note Recognition"
               description={`${exercise.config.noteDuration} second notes for ${exercise.config.totalDuration} seconds`}
             />
           ))}
+
+          {exercises.length > 0 && (
+            <Button onClick={() => setScreenState("playing")}>Start!</Button>
+          )}
         </>
       )}
 
-      {showNoteRec && (
+      {screenState === "exercise-form" && (
         <NoteRecognitionForm
           data={getDefaultNoteRecognitionConfig()}
           onSubmit={handleNoteRecSubmit}
         />
+      )}
+
+      {screenState === "playing" && (
+        <TrainingPlayer exercises={exercises} onEnd={handleTrainingEnd} />
       )}
     </div>
   );
