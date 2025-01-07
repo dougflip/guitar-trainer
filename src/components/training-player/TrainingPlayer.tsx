@@ -3,11 +3,25 @@ import { useCallback, useEffect, useState } from "react";
 import { Exercise } from "@/core/exercises";
 import { NoteRecognitionPlayer } from "@/components/note-recognition/NoteRecognitionPlayer";
 import { useWakeLock } from "react-screen-wake-lock";
+import { BasicScalePlayer } from "@/components/basic-scale/BasicScalePlayer";
+import { Button, Center } from "@mantine/core";
 
 type TrainingPlayerProps = {
   exercises: Exercise[];
   onEnd: () => void;
 };
+
+function renderExercise(exercise: Exercise, onEnd: () => void) {
+  switch (exercise.type) {
+    case "note-recognition":
+      return <NoteRecognitionPlayer config={exercise.config} onEnd={onEnd} />;
+    case "scales":
+      return <BasicScalePlayer config={exercise.config} onEnd={onEnd} />;
+    default:
+      console.warn("Unknown exercise: ", exercise satisfies never);
+      return null;
+  }
+}
 
 /**
  * Can "play" through a training which is a collection of exercises.
@@ -33,9 +47,11 @@ export function TrainingPlayer({ exercises, onEnd }: TrainingPlayerProps) {
   }, [currentExerciseIndex, exercises, onEnd]);
 
   return (
-    <NoteRecognitionPlayer
-      config={exercises[currentExerciseIndex].config}
-      onEnd={handleOnExerciseEnd}
-    />
+    <>
+      {renderExercise(exercises[currentExerciseIndex], handleOnExerciseEnd)}
+      <Center>
+        <Button onClick={() => onEnd()}>Exit</Button>
+      </Center>
+    </>
   );
 }

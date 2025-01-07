@@ -36,9 +36,6 @@ export function NoteRecognitionPlayer({
   return (
     <div className="nrp-container">
       <div className="nrp-note">{note}</div>
-      <div>
-        <Button onClick={onEnd}>Stop</Button>
-      </div>
     </div>
   );
 }

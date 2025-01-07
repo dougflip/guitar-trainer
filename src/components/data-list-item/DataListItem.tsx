@@ -1,18 +1,21 @@
 import "./DataListItem.css";
 
+import { Button, Text } from "@mantine/core";
+
 import { ReactNode } from "react";
-import { Text } from "@mantine/core";
 
 export type DataListItemProps = {
   symbol: ReactNode;
   title: ReactNode;
   description: ReactNode;
+  onRemove: () => void;
 };
 
 export function DataListItem({
   symbol,
   title,
   description,
+  onRemove,
 }: DataListItemProps) {
   return (
     <div className="data-list-item">
@@ -22,6 +25,11 @@ export function DataListItem({
         <Text c="dimmed" size="sm">
           {description}
         </Text>
+      </div>
+      <div className="data-list-item-actions">
+        <Button onClick={onRemove} variant="outline">
+          Remove
+        </Button>
       </div>
     </div>
   );

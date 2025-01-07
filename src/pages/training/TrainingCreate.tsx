@@ -1,16 +1,38 @@
+import { BasicScaleConfig, Exercise, ExerciseName } from "@/core/exercises";
 import { Button, Select } from "@mantine/core";
 import {
   NoteRecognitionConfig,
   getDefaultNoteRecognitionConfig,
 } from "@/core/note-recognition";
+import { ReactNode, useState } from "react";
 
+import { BasicScaleForm } from "@/components/basic-scale/BasicScaleForm";
 import { DataListItem } from "@/components/data-list-item/DataListItem";
-import { Exercise } from "@/core/exercises";
 import NoteRecognitionForm from "@/components/note-recognition/NoteRecognitionForm";
 import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
-import { useState } from "react";
 
-type ScreenState = "exercise-select" | "exercise-form" | "playing";
+type ScreenState =
+  | { kind: "exercise-select" }
+  | { kind: "exercise-form"; form: ExerciseName }
+  | { kind: "playing" };
+
+function getExerciseListProps(exercise: Exercise): {
+  title: ReactNode;
+  description: ReactNode;
+} {
+  switch (exercise.type) {
+    case "note-recognition":
+      return {
+        title: "Note Recognition",
+        description: `${exercise.config.noteDuration} second notes for ${exercise.config.totalDuration} seconds`,
+      };
+    case "scales":
+      return {
+        title: "Scales",
+        description: `${exercise.config.tempo} BPM for ${exercise.config.totalDuration} seconds`,
+      };
+  }
+}
 
 /**
  * Allows the use to build a training course comprised of a set of exercises.
@@ -19,58 +41,80 @@ type ScreenState = "exercise-select" | "exercise-form" | "playing";
  */
 export function TrainingCreatePage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [screenState, setScreenState] =
-    useState<ScreenState>("exercise-select");
+  const [screenState, setScreenState] = useState<ScreenState>({
+    kind: "exercise-select",
+  });
 
   const handleNoteRecSubmit = (config: NoteRecognitionConfig) => {
     setExercises([...exercises, { type: "note-recognition", config }]);
-    setScreenState("exercise-select");
+    setScreenState({ kind: "exercise-select" });
+  };
+
+  const handleBasicScaleSubmit = (config: BasicScaleConfig) => {
+    setExercises([...exercises, { type: "scales", config }]);
+    setScreenState({ kind: "exercise-select" });
   };
 
   const handleTrainingEnd = () => {
-    setScreenState("exercise-select");
+    setScreenState({ kind: "exercise-select" });
+  };
+
+  const handleExerciseRemove = (index: number) => {
+    setExercises(exercises.filter((_, i) => i !== index));
   };
 
   return (
     <div>
-      {screenState === "exercise-select" && (
+      {screenState.kind === "exercise-select" && (
         <>
-          <h1>Create a Training Course</h1>
-          <p>
-            Here you can build a training course by selecting and configuring
-            exercises.
-          </p>
+          <h1>Create a Training</h1>
+          <p>Build a training course by selecting and configuring exercises.</p>
           <Select
-            data={[{ label: "Note Recognition", value: "note-recognition" }]}
+            data={[
+              { label: "Note Recognition", value: "note-recognition" },
+              { label: "Scales", value: "scales" },
+            ]}
             placeholder="Select an exercise"
             searchable={false}
-            onChange={() => {
-              setScreenState("exercise-form");
+            onChange={(e) => {
+              setScreenState({
+                kind: "exercise-form",
+                form: e as ExerciseName,
+              });
             }}
           />
           {exercises.map((exercise, index) => (
             <DataListItem
               key={index}
               symbol={index + 1}
-              title="Note Recognition"
-              description={`${exercise.config.noteDuration} second notes for ${exercise.config.totalDuration} seconds`}
+              onRemove={() => handleExerciseRemove(index)}
+              {...getExerciseListProps(exercise)}
             />
           ))}
 
           {exercises.length > 0 && (
-            <Button onClick={() => setScreenState("playing")}>Start!</Button>
+            <Button onClick={() => setScreenState({ kind: "playing" })}>
+              Start!
+            </Button>
           )}
         </>
       )}
 
-      {screenState === "exercise-form" && (
-        <NoteRecognitionForm
-          data={getDefaultNoteRecognitionConfig()}
-          onSubmit={handleNoteRecSubmit}
-        />
+      {screenState.kind === "exercise-form" && (
+        <>
+          {screenState.form === "note-recognition" && (
+            <NoteRecognitionForm
+              data={getDefaultNoteRecognitionConfig()}
+              onSubmit={handleNoteRecSubmit}
+            />
+          )}
+          {screenState.form === "scales" && (
+            <BasicScaleForm onSubmit={handleBasicScaleSubmit} />
+          )}
+        </>
       )}
 
-      {screenState === "playing" && (
+      {screenState.kind === "playing" && (
         <TrainingPlayer exercises={exercises} onEnd={handleTrainingEnd} />
       )}
     </div>

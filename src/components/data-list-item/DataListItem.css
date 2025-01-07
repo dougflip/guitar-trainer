@@ -17,3 +17,7 @@
   font-weight: 700;
   width: 60px;
 }
+
+.data-list-item-actions {
+  margin-inline-start: auto;
+}
