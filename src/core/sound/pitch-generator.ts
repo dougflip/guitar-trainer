@@ -30,6 +30,8 @@ export function createPitchGenerator({
      */
     play({ frequency, duration, volume }: PlayPitchArgs) {
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+      // small fade in time
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(
         volume || 0.5,
@@ -39,6 +41,11 @@ export function createPitchGenerator({
       // fade out the sound to avoid a "click" from a sharp stop
       // still hearing a click - especially in headphones - but it is better.
       // in the end, we may want to play samples anyway, we'll see
+
+      // TODO: Instead of a timeout try to use an interval
+      //   and keep track of how much time has elapsed.
+      // We should also ensure (from the parent) that the note is given
+      // enough time to play before the component is unmounted.
       timeoutId = setTimeout(() => {
         gainNode.gain.linearRampToValueAtTime(
           0,
