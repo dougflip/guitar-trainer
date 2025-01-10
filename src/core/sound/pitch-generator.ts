@@ -11,7 +11,7 @@ type PlayPitchArgs = {
 };
 
 export function createPitchGenerator({
-  oscillatorType = "sine",
+  oscillatorType = "triangle",
 }: CreatePitchGeneratorArgs = {}) {
   const audioContext = new window.AudioContext();
   const oscillator = audioContext.createOscillator();
@@ -42,10 +42,10 @@ export function createPitchGenerator({
       timeoutId = setTimeout(() => {
         gainNode.gain.linearRampToValueAtTime(
           0,
-          audioContext.currentTime + 0.3,
+          audioContext.currentTime + 0.1,
         );
         timeoutId = null;
-      }, duration - 300);
+      }, duration - 100);
     },
     /**
      * Cleans up resources when the generator is no longer needed.
