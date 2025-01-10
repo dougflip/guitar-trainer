@@ -1,4 +1,4 @@
-import { MetronomeConfig, createMetronome } from "@/core/Metronome";
+import { MetronomeConfig, createMetronome } from "@/core/sound/metronome";
 
 import { useEffect } from "react";
 

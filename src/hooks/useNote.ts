@@ -1,8 +1,10 @@
+import { Milliseconds } from "@/core/base";
+import { createPitchGenerator } from "@/core/sound/pitch-generator";
 import { useEffect } from "react";
 
 type UseNoteParams = {
   frequency: number;
-  duration: number;
+  duration: Milliseconds;
   volume?: number;
   enabled?: boolean;
 };
@@ -18,31 +20,9 @@ export function useNote({
       return;
     }
 
-    const audioContext = new window.AudioContext();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    const pitchGen = createPitchGenerator();
+    pitchGen.play({ frequency, duration, volume });
 
-    oscillator.type = "triangle";
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-    gainNode.gain.setValueAtTime(volume, audioContext.currentTime); // Set the volume
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    oscillator.start();
-
-    setTimeout(
-      () => {
-        gainNode.gain.exponentialRampToValueAtTime(
-          0.00001,
-          audioContext.currentTime + 0.1,
-        );
-      },
-      duration - 0.1 * 1000,
-    );
-
-    return () => {
-      oscillator.stop();
-      audioContext.close();
-    };
+    return pitchGen.dispose;
   }, [frequency, duration, enabled, volume]);
 }
