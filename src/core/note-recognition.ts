@@ -1,5 +1,7 @@
 import {
   BasicScaleConfig,
+  Exercise,
+  ExerciseName,
   ExerciseNoteRecognition,
   ExerciseScales,
 } from "@/core/exercises";
@@ -57,4 +59,15 @@ export function getDefaultScaleExercise(
       ...overrides,
     },
   };
+}
+
+export function getDefaultExercise(type: ExerciseName): Exercise {
+  switch (type) {
+    case "note-recognition":
+      return getDefaultNoteRecognitionExercise();
+    case "scales":
+      return getDefaultScaleExercise();
+    default:
+      throw new Error(`Unknown exercise type: ${type satisfies never}`);
+  }
 }

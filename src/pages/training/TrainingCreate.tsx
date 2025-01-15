@@ -1,19 +1,15 @@
 import { Button, Select } from "@mantine/core";
 import { Exercise, ExerciseName } from "@/core/exercises";
 import { ReactNode, useState } from "react";
-import {
-  getDefaultNoteRecognitionExercise,
-  getDefaultScaleExercise,
-} from "@/core/note-recognition";
 
-import { BasicScaleForm } from "@/components/basic-scale/BasicScaleForm";
 import { DataListItem } from "@/components/data-list-item/DataListItem";
-import NoteRecognitionForm from "@/components/note-recognition/NoteRecognitionForm";
+import { ExerciseForm } from "@/components/exercise/exercise-form";
 import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
+import { getDefaultExercise } from "@/core/note-recognition";
 
 type ScreenState =
   | { kind: "exercise-select" }
-  | { kind: "exercise-form"; form: ExerciseName }
+  | { kind: "exercise-edit"; exercise: Exercise; editIndex?: number }
   | { kind: "playing" };
 
 function getExerciseListProps(exercise: Exercise): {
@@ -76,8 +72,8 @@ export function TrainingCreatePage() {
             mb="lg"
             onChange={(e) => {
               setScreenState({
-                kind: "exercise-form",
-                form: e as ExerciseName,
+                kind: "exercise-edit",
+                exercise: getDefaultExercise(e as ExerciseName),
               });
             }}
             comboboxProps={{ offset: 0 }}
@@ -99,23 +95,12 @@ export function TrainingCreatePage() {
         </>
       )}
 
-      {screenState.kind === "exercise-form" && (
-        <>
-          {screenState.form === "note-recognition" && (
-            <NoteRecognitionForm
-              data={getDefaultNoteRecognitionExercise()}
-              onSubmit={handleExerciseSubmit}
-              onCancel={() => setScreenState({ kind: "exercise-select" })}
-            />
-          )}
-          {screenState.form === "scales" && (
-            <BasicScaleForm
-              data={getDefaultScaleExercise()}
-              onSubmit={handleExerciseSubmit}
-              onCancel={() => setScreenState({ kind: "exercise-select" })}
-            />
-          )}
-        </>
+      {screenState.kind === "exercise-edit" && (
+        <ExerciseForm
+          data={screenState.exercise}
+          onSubmit={handleExerciseSubmit}
+          onCancel={() => setScreenState({ kind: "exercise-select" })}
+        />
       )}
 
       {screenState.kind === "playing" && (
