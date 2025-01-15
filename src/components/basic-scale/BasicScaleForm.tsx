@@ -1,19 +1,27 @@
-import { Button, TextInput } from "@mantine/core";
-
-import { BasicScaleConfig } from "@/core/exercises";
+import { Exercise } from "@/core/exercises";
+import { FormButtons } from "@/components/form/form-buttons";
+import { TextInput } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 
 type BasicScaleFormProps = {
-  onSubmit: (config: BasicScaleConfig) => void;
+  data: Extract<Exercise, { type: "scales" }>;
+  onSubmit: (data: Exercise) => void;
+  onCancel: () => void;
 };
 
-export function BasicScaleForm({ onSubmit }: BasicScaleFormProps) {
-  const [tempo, setTempo] = useInputState(80);
-  const [totalDuration, setTotalDuration] = useInputState(60);
+export function BasicScaleForm({
+  data,
+  onSubmit,
+  onCancel,
+}: BasicScaleFormProps) {
+  const [tempo, setTempo] = useInputState(data.config.tempo || 80);
+  const [totalDuration, setTotalDuration] = useInputState(
+    data.config.totalDuration || 60,
+  );
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSubmit({ tempo, totalDuration });
+    onSubmit({ type: "scales", config: { tempo, totalDuration } });
   }
 
   return (
@@ -37,7 +45,7 @@ export function BasicScaleForm({ onSubmit }: BasicScaleFormProps) {
           min={0}
           size="lg"
         />
-        <Button type="submit">Save</Button>
+        <FormButtons onCancel={onCancel} />
       </form>
     </>
   );

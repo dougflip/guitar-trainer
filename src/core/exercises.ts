@@ -6,11 +6,16 @@ export type BasicScaleConfig = {
   totalDuration: Milliseconds;
 };
 
-export type Exercise =
-  | {
-      type: "note-recognition";
-      config: NoteRecognitionConfig;
-    }
-  | { type: "scales"; config: BasicScaleConfig };
+export type ExerciseNoteRecognition = {
+  type: "note-recognition";
+  config: NoteRecognitionConfig;
+};
+
+export type ExerciseScales = {
+  type: "scales";
+  config: BasicScaleConfig;
+};
+
+export type Exercise = ExerciseNoteRecognition | ExerciseScales;
 
 export type ExerciseName = Exercise["type"];

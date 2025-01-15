@@ -1,10 +1,10 @@
-import { BasicScaleConfig, Exercise, ExerciseName } from "@/core/exercises";
 import { Button, Select } from "@mantine/core";
-import {
-  NoteRecognitionConfig,
-  getDefaultNoteRecognitionConfig,
-} from "@/core/note-recognition";
+import { Exercise, ExerciseName } from "@/core/exercises";
 import { ReactNode, useState } from "react";
+import {
+  getDefaultNoteRecognitionExercise,
+  getDefaultScaleExercise,
+} from "@/core/note-recognition";
 
 import { BasicScaleForm } from "@/components/basic-scale/BasicScaleForm";
 import { DataListItem } from "@/components/data-list-item/DataListItem";
@@ -45,13 +45,8 @@ export function TrainingCreatePage() {
     kind: "exercise-select",
   });
 
-  const handleNoteRecSubmit = (config: NoteRecognitionConfig) => {
-    setExercises([...exercises, { type: "note-recognition", config }]);
-    setScreenState({ kind: "exercise-select" });
-  };
-
-  const handleBasicScaleSubmit = (config: BasicScaleConfig) => {
-    setExercises([...exercises, { type: "scales", config }]);
+  const handleExerciseSubmit = (exercise: Exercise) => {
+    setExercises([...exercises, exercise]);
     setScreenState({ kind: "exercise-select" });
   };
 
@@ -67,8 +62,10 @@ export function TrainingCreatePage() {
     <div>
       {screenState.kind === "exercise-select" && (
         <>
-          <h1>Create a Training</h1>
-          <p>Build a training course by selecting and configuring exercises.</p>
+          <h1>Create a Training Session</h1>
+          <p>
+            Build a training session by selecting and configuring exercises.
+          </p>
           <Select
             data={[
               { label: "Note Recognition", value: "note-recognition" },
@@ -76,12 +73,14 @@ export function TrainingCreatePage() {
             ]}
             placeholder="Select an exercise"
             searchable={false}
+            mb="lg"
             onChange={(e) => {
               setScreenState({
                 kind: "exercise-form",
                 form: e as ExerciseName,
               });
             }}
+            comboboxProps={{ offset: 0 }}
           />
           {exercises.map((exercise, index) => (
             <DataListItem
@@ -104,12 +103,17 @@ export function TrainingCreatePage() {
         <>
           {screenState.form === "note-recognition" && (
             <NoteRecognitionForm
-              data={getDefaultNoteRecognitionConfig()}
-              onSubmit={handleNoteRecSubmit}
+              data={getDefaultNoteRecognitionExercise()}
+              onSubmit={handleExerciseSubmit}
+              onCancel={() => setScreenState({ kind: "exercise-select" })}
             />
           )}
           {screenState.form === "scales" && (
-            <BasicScaleForm onSubmit={handleBasicScaleSubmit} />
+            <BasicScaleForm
+              data={getDefaultScaleExercise()}
+              onSubmit={handleExerciseSubmit}
+              onCancel={() => setScreenState({ kind: "exercise-select" })}
+            />
           )}
         </>
       )}

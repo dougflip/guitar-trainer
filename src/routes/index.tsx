@@ -1,13 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Container } from "@mantine/core";
+import { TrainingCreatePage } from "@/pages/training/TrainingCreate";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/')({
-  component: Index,
-})
-
-function Index() {
-  return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
-  )
-}
+export const Route = createFileRoute("/")({
+  component: () => (
+    <Container maw={1000} mx="auto">
+      <TrainingCreatePage />
+    </Container>
+  ),
+});
