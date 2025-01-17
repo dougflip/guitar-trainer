@@ -2,7 +2,6 @@ import "./NoteRecognitionPlayer.css";
 
 import { getRandomNote, noteFrequencies } from "@/core/notes";
 
-import { Button } from "@mantine/core";
 import { NoteRecognitionConfig } from "@/core/note-recognition";
 import { useInterval } from "@/hooks/useInterval";
 import { useNote } from "@/hooks/useNote";
@@ -36,9 +35,6 @@ export function NoteRecognitionPlayer({
   return (
     <div className="nrp-container">
       <div className="nrp-note">{note}</div>
-      <div>
-        <Button onClick={onEnd}>Stop</Button>
-      </div>
     </div>
   );
 }
