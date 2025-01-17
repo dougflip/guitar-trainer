@@ -6,6 +6,7 @@ import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { ExerciseForm } from "@/components/exercise/exercise-form";
 import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
 import { getDefaultExercise } from "@/core/note-recognition";
+import { updateItemAtIndex } from "@/core/utils";
 
 type ScreenState =
   | { kind: "exercise-select" }
@@ -41,8 +42,15 @@ export function TrainingCreatePage() {
     kind: "exercise-select",
   });
 
-  const handleExerciseSubmit = (exercise: Exercise) => {
-    setExercises([...exercises, exercise]);
+  const handleExerciseSubmit = (
+    exercise: Exercise,
+    editIndex: number | null,
+  ) => {
+    setExercises((current) =>
+      editIndex !== null
+        ? updateItemAtIndex(current, editIndex, exercise)
+        : [...current, exercise],
+    );
     setScreenState({ kind: "exercise-select" });
   };
 
@@ -82,6 +90,13 @@ export function TrainingCreatePage() {
             <DataListItem
               key={index}
               symbol={index + 1}
+              onEdit={() =>
+                setScreenState({
+                  kind: "exercise-edit",
+                  exercise,
+                  editIndex: index,
+                })
+              }
               onRemove={() => handleExerciseRemove(index)}
               {...getExerciseListProps(exercise)}
             />
@@ -98,7 +113,9 @@ export function TrainingCreatePage() {
       {screenState.kind === "exercise-edit" && (
         <ExerciseForm
           data={screenState.exercise}
-          onSubmit={handleExerciseSubmit}
+          onSubmit={(x) =>
+            handleExerciseSubmit(x, screenState.editIndex ?? null)
+          }
           onCancel={() => setScreenState({ kind: "exercise-select" })}
         />
       )}

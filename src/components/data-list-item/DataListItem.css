@@ -20,4 +20,6 @@
 
 .data-list-item-actions {
   margin-inline-start: auto;
+  display: flex;
+  column-gap: 0.5rem;
 }

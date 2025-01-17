@@ -1,7 +1,7 @@
-import { AppShell, Burger, Group, Text } from "@mantine/core";
+import { AppShell, Burger, Group, NavLink, Text } from "@mantine/core";
+import { Link, Outlet } from "@tanstack/react-router";
 
 import { IconMusic } from "@tabler/icons-react";
-import { Outlet } from "@tanstack/react-router";
 import { useDisclosure } from "@mantine/hooks";
 
 export function MainAppShell() {
@@ -36,8 +36,8 @@ export function MainAppShell() {
           <Text size="xl">Master Shredder</Text>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar bg="blue" p="md">
-        Navbar
+      <AppShell.Navbar p="md">
+        <NavLink component={Link} to="/" label="My Training Sessions" />
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />
