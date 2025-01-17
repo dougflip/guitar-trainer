@@ -1,11 +1,11 @@
 import { Container } from "@mantine/core";
-import { TrainingCreatePage } from "@/pages/training/TrainingCreate";
+import { TrainingSessionCreatePage } from "@/pages/training-sessions/TrainingSessionCreate";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: () => (
     <Container maw={1000} mx="auto">
-      <TrainingCreatePage />
+      <TrainingSessionCreatePage />
     </Container>
   ),
 });

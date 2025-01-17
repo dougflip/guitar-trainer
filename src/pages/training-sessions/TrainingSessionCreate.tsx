@@ -36,7 +36,7 @@ function getExerciseListProps(exercise: Exercise): {
  * For now, you can just run the training.
  * In the future, you will be able to save the training and run it later.
  */
-export function TrainingCreatePage() {
+export function TrainingSessionCreatePage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [screenState, setScreenState] = useState<ScreenState>({
     kind: "exercise-select",
