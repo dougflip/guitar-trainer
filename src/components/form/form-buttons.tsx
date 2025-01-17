@@ -7,7 +7,7 @@ type FormButtonsProps = {
 export function FormButtons({ onCancel }: FormButtonsProps) {
   return (
     <Flex mt="lg" columnGap={5}>
-      <Button type="button" onClick={onCancel}>
+      <Button type="button" onClick={onCancel} variant="outline">
         Cancel
       </Button>
       <Button type="submit">Submit</Button>
