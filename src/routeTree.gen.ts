@@ -12,12 +12,19 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as TrainingSessionsCreateImport } from './routes/training-sessions/create'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TrainingSessionsCreateRoute = TrainingSessionsCreateImport.update({
+  id: '/training-sessions/create',
+  path: '/training-sessions/create',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/training-sessions/create': {
+      id: '/training-sessions/create'
+      path: '/training-sessions/create'
+      fullPath: '/training-sessions/create'
+      preLoaderRoute: typeof TrainingSessionsCreateImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/training-sessions/create': typeof TrainingSessionsCreateRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/training-sessions/create': typeof TrainingSessionsCreateRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/training-sessions/create': typeof TrainingSessionsCreateRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/training-sessions/create'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/training-sessions/create'
+  id: '__root__' | '/' | '/training-sessions/create'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TrainingSessionsCreateRoute: typeof TrainingSessionsCreateRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TrainingSessionsCreateRoute: TrainingSessionsCreateRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/training-sessions/create"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/training-sessions/create": {
+      "filePath": "training-sessions/create.tsx"
     }
   }
 }

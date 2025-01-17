@@ -1,11 +1,13 @@
-import { Container } from "@mantine/core";
-import { TrainingSessionCreatePage } from "@/pages/training-sessions/TrainingSessionCreate";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
+/**
+ * Redirects the user to training sessions as the root page.
+ * In the future this can render the training sessions page if we want.
+ */
 export const Route = createFileRoute("/")({
-  component: () => (
-    <Container maw={1000} mx="auto">
-      <TrainingSessionCreatePage />
-    </Container>
-  ),
+  beforeLoad: () => {
+    throw redirect({
+      to: "/training-sessions/create",
+    });
+  },
 });
