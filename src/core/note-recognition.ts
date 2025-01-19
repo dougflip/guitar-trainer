@@ -8,6 +8,7 @@ import {
 
 import { Milliseconds } from "@/core/base";
 import { notes } from "@/core/notes";
+import { shuffle } from "remeda";
 
 export type NoteRecognitionConfig = {
   noteDuration: Milliseconds;
@@ -67,22 +68,17 @@ export function getDefaultExercise(type: ExerciseName): Exercise {
  * After all notes are used once, the pool of notes automatically resets to the initial set.
  */
 export function makeNoteGenerator(initialNotes: string[] = [...notes]) {
-  let availableNotes: string[] = [...initialNotes];
+  let availableNotes: string[] = [];
 
   return {
     nextNote() {
       if (availableNotes.length === 0) {
-        availableNotes = [...notes];
+        availableNotes = shuffle(initialNotes);
       }
 
-      const index = Math.floor(Math.random() * availableNotes.length);
-      const note = availableNotes[index];
+      const [note, ...nextAvailable] = availableNotes;
 
-      availableNotes = [
-        ...availableNotes.slice(0, index),
-        ...availableNotes.slice(index + 1),
-      ];
-
+      availableNotes = nextAvailable;
       return note;
     },
   };
