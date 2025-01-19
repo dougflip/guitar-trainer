@@ -4,11 +4,11 @@ import {
   NoteRecognitionConfig,
   makeNoteGenerator,
 } from "@/core/note-recognition";
-import { getRandomNote, noteFrequencies } from "@/core/notes";
 import { useEffect, useState } from "react";
 
 import { createMetronome } from "@/core/sound/metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
+import { noteFrequencies } from "@/core/notes";
 import { useInterval } from "@/hooks/useInterval";
 
 type NoteRecognitionPlayerProps = {
