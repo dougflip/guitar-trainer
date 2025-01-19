@@ -50,7 +50,7 @@ export function TrainingPlayer({ exercises, onEnd }: TrainingPlayerProps) {
     <>
       {renderExercise(exercises[currentExerciseIndex], handleOnExerciseEnd)}
       <Center>
-        <Button onClick={() => onEnd()}>Exit</Button>
+        <Button onClick={onEnd}>Exit</Button>
       </Center>
     </>
   );

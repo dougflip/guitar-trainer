@@ -5,6 +5,9 @@ type TimeoutId = ReturnType<typeof setTimeout>;
 export type MetronomeConfig = {
   tempo: number;
   beatsPerBar?: number;
+  isSoundOn?: boolean;
+  onBeatEnd?: (beatNumber: number) => void;
+  onMeasureEnd?: () => void;
 };
 
 /**
@@ -14,7 +17,13 @@ export type MetronomeConfig = {
  * https://github.com/grantjames/metronome/blob/master/metronome.js
  * https://grantjam.es/creating-a-simple-metronome-using-javascript-and-the-web-audio-api/
  */
-export function createMetronome({ tempo, beatsPerBar = 4 }: MetronomeConfig) {
+export function createMetronome({
+  tempo,
+  beatsPerBar = 4,
+  isSoundOn = true,
+  onBeatEnd,
+  onMeasureEnd,
+}: MetronomeConfig) {
   const notesInQueue: QueuedNote[] = []; // notes that have been put into the web audio and may or may not have been played yet {note, time}
   const lookahead = 25; // How frequently to call scheduling function (in milliseconds)
   const scheduleAheadTime = 0.1; // How far ahead to schedule audio (sec)
@@ -49,8 +58,11 @@ export function createMetronome({ tempo, beatsPerBar = 4 }: MetronomeConfig) {
     const envelope = audioContext.createGain();
 
     osc.frequency.value = beatNumber % beatsPerBar == 0 ? 1000 : 800;
-    envelope.gain.value = 1;
-    envelope.gain.exponentialRampToValueAtTime(1, time + 0.001);
+    envelope.gain.value = isSoundOn ? 1 : 0;
+    envelope.gain.exponentialRampToValueAtTime(
+      isSoundOn ? 1 : 0.001,
+      time + 0.001,
+    );
     envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
 
     osc.connect(envelope);
@@ -58,6 +70,12 @@ export function createMetronome({ tempo, beatsPerBar = 4 }: MetronomeConfig) {
 
     osc.start(time);
     osc.stop(time + 0.03);
+    osc.onended = () => {
+      onBeatEnd?.(beatNumber);
+      if (beatNumber % beatsPerBar === 0) {
+        onMeasureEnd?.();
+      }
+    };
   }
 
   function scheduler() {
