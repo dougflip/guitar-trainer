@@ -7,6 +7,8 @@ import {
 } from "@/core/exercises";
 
 import { Milliseconds } from "@/core/base";
+import { notes } from "@/core/notes";
+import { shuffle } from "remeda";
 
 export type NoteRecognitionConfig = {
   noteDuration: Milliseconds;
@@ -20,18 +22,6 @@ export type NoteRecognitionConfig = {
   // play the current pitch - the entire duration? just once? or not at all?
   // playCurrentNote: "full-duration" | "once" | "off";
 };
-
-/**
- * TODO: Delete this one....
- */
-export function getDefaultNoteRecognitionConfig(): NoteRecognitionConfig {
-  return {
-    noteDuration: 5,
-    playCurrentNote: false,
-    noteVolume: 0.5,
-    totalDuration: 60,
-  };
-}
 
 export function getDefaultNoteRecognitionExercise(
   overrides: Partial<NoteRecognitionConfig> = {},
@@ -70,4 +60,26 @@ export function getDefaultExercise(type: ExerciseName): Exercise {
     default:
       throw new Error(`Unknown exercise type: ${type satisfies never}`);
   }
+}
+
+/**
+ * A generator which produces "random" notes, but will not repeat a note until
+ * all notes have been used.
+ * After all notes are used once, the pool of notes automatically resets to the initial set.
+ */
+export function makeNoteGenerator(initialNotes: string[] = [...notes]) {
+  let availableNotes: string[] = [];
+
+  return {
+    nextNote() {
+      if (availableNotes.length === 0) {
+        availableNotes = shuffle(initialNotes);
+      }
+
+      const [note, ...nextAvailable] = availableNotes;
+
+      availableNotes = nextAvailable;
+      return note;
+    },
+  };
 }

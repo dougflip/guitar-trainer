@@ -1,9 +1,12 @@
 import "./NoteRecognitionPlayer.css";
 
+import {
+  NoteRecognitionConfig,
+  makeNoteGenerator,
+} from "@/core/note-recognition";
 import { getRandomNote, noteFrequencies } from "@/core/notes";
 import { useEffect, useState } from "react";
 
-import { NoteRecognitionConfig } from "@/core/note-recognition";
 import { createMetronome } from "@/core/sound/metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 import { useInterval } from "@/hooks/useInterval";
@@ -21,12 +24,13 @@ export function NoteRecognitionPlayer({
 
   // Use the metronome's event to change/play notes
   useEffect(() => {
+    const noteGen = makeNoteGenerator();
     const pitchGenerator = createPitchGenerator();
     const metronome = createMetronome({
       tempo: Math.round(60 / config.noteDuration),
       isSoundOn: false,
       onBeatEnd: () => {
-        const note = getRandomNote();
+        const note = noteGen.nextNote();
         setNote(note);
         if (config.playCurrentNote) {
           pitchGenerator.play({
