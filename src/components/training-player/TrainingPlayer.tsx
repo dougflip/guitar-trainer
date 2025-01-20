@@ -5,6 +5,7 @@ import { NoteRecognitionPlayer } from "@/components/note-recognition/NoteRecogni
 import { useWakeLock } from "react-screen-wake-lock";
 import { BasicScalePlayer } from "@/components/basic-scale/BasicScalePlayer";
 import { Button, Center } from "@mantine/core";
+import { Cycle4Player } from "@/components/cycle4/cycle4-player";
 
 type TrainingPlayerProps = {
   exercises: Exercise[];
@@ -17,6 +18,8 @@ function renderExercise(exercise: Exercise, onEnd: () => void) {
       return <NoteRecognitionPlayer config={exercise.config} onEnd={onEnd} />;
     case "scales":
       return <BasicScalePlayer config={exercise.config} onEnd={onEnd} />;
+    case "cycle4":
+      return <Cycle4Player config={exercise.config} onEnd={onEnd} />;
     default:
       console.warn("Unknown exercise: ", exercise satisfies never);
       return null;

@@ -1,4 +1,5 @@
 import { BasicScaleForm } from "@/components/basic-scale/BasicScaleForm";
+import { Cycle4Form } from "@/components/cycle4/cycle4-form";
 import NoteRecognitionForm from "@/components/note-recognition/NoteRecognitionForm";
 import { Exercise } from "@/core/exercises";
 
@@ -14,6 +15,8 @@ export function ExerciseForm(props: ExerciseFormProps) {
       return <NoteRecognitionForm {...props} data={props.data} />;
     case "scales":
       return <BasicScaleForm {...props} data={props.data} />;
+    case "cycle4":
+      return <Cycle4Form {...props} data={props.data} />;
     default:
       console.error(
         `Attempted to render unknown exercise: ${props.data satisfies never}`,

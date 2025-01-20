@@ -1,4 +1,5 @@
-import { Milliseconds } from "@/core/base";
+import { BPM, Milliseconds } from "@/core/base";
+
 import { NoteRecognitionConfig } from "@/core/note-recognition";
 
 export type BasicScaleConfig = {
@@ -16,6 +17,20 @@ export type ExerciseScales = {
   config: BasicScaleConfig;
 };
 
-export type Exercise = ExerciseNoteRecognition | ExerciseScales;
+export type Cycle4Config = {
+  tempo: BPM;
+  numberOfCycles: number;
+  totalDuration: Milliseconds;
+};
+
+export type ExerciseCycle4 = {
+  type: "cycle4";
+  config: Cycle4Config;
+};
+
+export type Exercise =
+  | ExerciseNoteRecognition
+  | ExerciseScales
+  | ExerciseCycle4;
 
 export type ExerciseName = Exercise["type"];
