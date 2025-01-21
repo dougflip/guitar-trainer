@@ -28,6 +28,11 @@ function getExerciseListProps(exercise: Exercise): {
         title: "Scales",
         description: `${exercise.config.tempo} BPM for ${exercise.config.totalDuration} seconds`,
       };
+    case "cycle4":
+      return {
+        title: "Cycle 4",
+        description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
+      };
   }
 }
 
@@ -74,6 +79,7 @@ export function TrainingSessionCreatePage() {
             data={[
               { label: "Note Recognition", value: "note-recognition" },
               { label: "Scales", value: "scales" },
+              { label: "Cycle 4", value: "cycle4" },
             ]}
             placeholder="Select an exercise"
             searchable={false}

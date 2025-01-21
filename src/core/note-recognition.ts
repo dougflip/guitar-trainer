@@ -1,6 +1,8 @@
 import {
   BasicScaleConfig,
+  Cycle4Config,
   Exercise,
+  ExerciseCycle4,
   ExerciseName,
   ExerciseNoteRecognition,
   ExerciseScales,
@@ -51,12 +53,29 @@ export function getDefaultScaleExercise(
   };
 }
 
+export function getDefaultCycle4Exercise(
+  overrides: Partial<Cycle4Config> = {},
+): ExerciseCycle4 {
+  return {
+    type: "cycle4",
+    config: {
+      tempo: 80,
+      beatsPerNote: 12,
+      totalDuration: 60,
+      numberOfCycles: 1,
+      ...overrides,
+    },
+  };
+}
+
 export function getDefaultExercise(type: ExerciseName): Exercise {
   switch (type) {
     case "note-recognition":
       return getDefaultNoteRecognitionExercise();
     case "scales":
       return getDefaultScaleExercise();
+    case "cycle4":
+      return getDefaultCycle4Exercise();
     default:
       throw new Error(`Unknown exercise type: ${type satisfies never}`);
   }
