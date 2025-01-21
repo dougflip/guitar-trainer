@@ -19,6 +19,7 @@ export type ExerciseScales = {
 
 export type Cycle4Config = {
   tempo: BPM;
+  beatsPerNote: number;
   numberOfCycles: number;
   totalDuration: Milliseconds;
 };

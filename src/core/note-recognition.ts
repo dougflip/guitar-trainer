@@ -60,8 +60,9 @@ export function getDefaultCycle4Exercise(
     type: "cycle4",
     config: {
       tempo: 80,
+      beatsPerNote: 12,
       totalDuration: 60,
-      numberOfCycles: 2,
+      numberOfCycles: 1,
       ...overrides,
     },
   };

@@ -31,7 +31,7 @@ function getExerciseListProps(exercise: Exercise): {
     case "cycle4":
       return {
         title: "Cycle 4",
-        description: `${exercise.config.tempo} BPM for ${exercise.config.totalDuration} seconds`,
+        description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
       };
   }
 }
