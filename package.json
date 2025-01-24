@@ -14,13 +14,16 @@
   },
   "dependencies": {
     "@mantine/core": "^7.15.2",
+    "@mantine/form": "^7.16.1",
     "@mantine/hooks": "^7.15.2",
     "@tabler/icons-react": "^3.28.1",
     "@tanstack/react-router": "^1.95.6",
+    "mantine-form-zod-resolver": "^1.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-screen-wake-lock": "^3.0.2",
-    "remeda": "^2.19.2"
+    "remeda": "^2.19.2",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
