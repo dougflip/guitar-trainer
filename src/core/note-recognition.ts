@@ -6,10 +6,12 @@ import {
   ExerciseName,
   ExerciseNoteRecognition,
   ExerciseScales,
+  ExerciseTimedPitches,
+  ExerciseTimedPitchesConfig,
 } from "@/core/exercises";
 
 import { Milliseconds } from "@/core/base";
-import { notes } from "@/core/notes";
+import { cycle4Notes, notes } from "@/core/notes";
 import { shuffle } from "remeda";
 
 export type NoteRecognitionConfig = {
@@ -68,6 +70,25 @@ export function getDefaultCycle4Exercise(
   };
 }
 
+export function getDefaultTimedPitchesExercise(
+  overrides: Partial<ExerciseTimedPitchesConfig> = {},
+): ExerciseTimedPitches {
+  return {
+    type: "timed-pitches",
+    config: {
+      title: "",
+      description: "",
+      tempo: 80,
+      beatsPerNote: 12,
+      numberOfCycles: 1,
+      notes: [...cycle4Notes],
+      metronomeVolume: 50,
+      pitchVolume: 50,
+      ...overrides,
+    },
+  };
+}
+
 export function getDefaultExercise(type: ExerciseName): Exercise {
   switch (type) {
     case "note-recognition":
@@ -76,6 +97,8 @@ export function getDefaultExercise(type: ExerciseName): Exercise {
       return getDefaultScaleExercise();
     case "cycle4":
       return getDefaultCycle4Exercise();
+    case "timed-pitches":
+      return getDefaultTimedPitchesExercise();
     default:
       throw new Error(`Unknown exercise type: ${type satisfies never}`);
   }

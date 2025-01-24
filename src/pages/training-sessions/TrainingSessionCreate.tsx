@@ -33,6 +33,11 @@ function getExerciseListProps(exercise: Exercise): {
         title: "Cycle 4",
         description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
       };
+    case "timed-pitches":
+      return {
+        title: exercise.config.title,
+        description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
+      };
   }
 }
 
@@ -77,6 +82,7 @@ export function TrainingSessionCreatePage() {
           </p>
           <Select
             data={[
+              { label: "Timed Pitches", value: "timed-pitches" },
               { label: "Note Recognition", value: "note-recognition" },
               { label: "Scales", value: "scales" },
               { label: "Cycle 4", value: "cycle4" },
