@@ -1,10 +1,13 @@
-import { Button, Select } from "@mantine/core";
+import { Button, Center, Flex, Select, Text } from "@mantine/core";
 import { Exercise, ExerciseName } from "@/core/exercises";
 import { ReactNode, useState } from "react";
+import { TrainingSession, makeTrainingSession } from "@/core/training-session";
 
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { ExerciseForm } from "@/components/exercise/exercise-form";
+import { Form } from "@mantine/form";
 import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
+import { TrainingSessionForm } from "@/components/training-session/training-session-form";
 import { getDefaultExercise } from "@/core/note-recognition";
 import { updateItemAtIndex } from "@/core/utils";
 
@@ -47,6 +50,9 @@ function getExerciseListProps(exercise: Exercise): {
  * In the future, you will be able to save the training and run it later.
  */
 export function TrainingSessionCreatePage() {
+  const [trainingSession, setTrainingSession] = useState<TrainingSession>(
+    makeTrainingSession(),
+  );
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [screenState, setScreenState] = useState<ScreenState>({
     kind: "exercise-select",
@@ -76,11 +82,12 @@ export function TrainingSessionCreatePage() {
     <div>
       {screenState.kind === "exercise-select" && (
         <>
-          <h1>Create a Training Session</h1>
+          {/* <h1>Create a Training Session</h1>
           <p>
-            Build a training session by selecting and configuring exercises.
-          </p>
-          <Select
+            A training session is a collection of exercises which help you
+            practice a specific skill.
+          </p> */}
+          {/* <Select
             data={[
               { label: "Timed Pitches", value: "timed-pitches" },
               { label: "Note Recognition", value: "note-recognition" },
@@ -97,7 +104,9 @@ export function TrainingSessionCreatePage() {
               });
             }}
             comboboxProps={{ offset: 0 }}
-          />
+          /> */}
+          {/* <label>Exercises</label>
+          {exercises.length === 0 && <Center>Add an exercise</Center>}
           {exercises.map((exercise, index) => (
             <DataListItem
               key={index}
@@ -118,7 +127,9 @@ export function TrainingSessionCreatePage() {
             <Button onClick={() => setScreenState({ kind: "playing" })}>
               Start!
             </Button>
-          )}
+          )} */}
+
+          <TrainingSessionForm data={trainingSession} />
         </>
       )}
 

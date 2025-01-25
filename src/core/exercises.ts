@@ -48,10 +48,10 @@ export type ExerciseTimedPitches = {
   config: ExerciseTimedPitchesConfig;
 };
 
-export type Exercise =
-  | ExerciseNoteRecognition
-  | ExerciseScales
-  | ExerciseCycle4
-  | ExerciseTimedPitches;
+// export type Exercise =
+//   | ExerciseNoteRecognition
+//   | ExerciseScales
+//   | ExerciseCycle4
+//   | ExerciseTimedPitches;
 
-export type ExerciseName = Exercise["type"];
+// export type ExerciseName = Exercise["type"];

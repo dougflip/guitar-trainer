@@ -1,5 +1,5 @@
-import { Exercise, ExerciseTimedPitchesConfig } from "@/core/exercises";
-import { TextInput, Textarea } from "@mantine/core";
+import { Exercise, ExerciseTimedPitchesConfig } from "@/core/training-session";
+import { TextInput, Textarea, Title } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 
 import { FormButtons } from "@/components/form/form-buttons";
@@ -61,7 +61,7 @@ export function TimedPitchesForm({
 
   return (
     <div>
-      <h2>Create an exercise</h2>
+      <Title order={2}>Add an exercise</Title>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
           withAsterisk
