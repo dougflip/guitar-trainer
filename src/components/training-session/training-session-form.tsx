@@ -5,7 +5,6 @@ import { ReactNode, useState } from "react";
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { FormButtons } from "@/components/form/form-buttons";
 import { TimedPitchesForm } from "@/components/timed-pitches/timed-pitches-form";
-import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
 import { TrainingSession } from "@/core/training-session";
 import { getDefaultTimedPitchesExercise } from "@/core/note-recognition";
 import { useForm } from "@mantine/form";
@@ -13,6 +12,7 @@ import { useForm } from "@mantine/form";
 type TrainingSessionFormProps = {
   data: TrainingSession;
   onSubmit: (data: TrainingSession) => void;
+  onCancel: () => void;
 };
 
 type ScreenState =
@@ -21,8 +21,7 @@ type ScreenState =
       kind: "exercise-edit";
       exercise: ExerciseTimedPitches;
       editIndex?: number;
-    }
-  | { kind: "playing" };
+    };
 
 function getExerciseListProps(exercise: Exercise): {
   title: ReactNode;
@@ -37,6 +36,7 @@ function getExerciseListProps(exercise: Exercise): {
 export function TrainingSessionForm({
   data,
   onSubmit,
+  onCancel,
 }: TrainingSessionFormProps) {
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
   const form = useForm({ initialValues: data });
@@ -66,6 +66,7 @@ export function TrainingSessionForm({
             practice a specific skill.
           </p>
           <TextInput
+            withAsterisk
             label="Title"
             description="The title of the training session"
             mb="lg"
@@ -113,7 +114,7 @@ export function TrainingSessionForm({
             key={form.key("description")}
             {...form.getInputProps("description")}
           />
-          <FormButtons submitText="Start" />
+          <FormButtons onCancel={onCancel} />
         </form>
       )}
       {screenState.kind === "exercise-edit" && (
@@ -123,13 +124,6 @@ export function TrainingSessionForm({
           onSubmit={(e) =>
             handleExerciseSubmit(e, screenState.editIndex ?? null)
           }
-        />
-      )}
-
-      {screenState.kind === "playing" && (
-        <TrainingPlayer
-          exercises={form.getValues().exercises}
-          onEnd={() => setScreenState({ kind: "form" })}
         />
       )}
     </>

@@ -1,48 +1,7 @@
-import { Button, Center, Flex, Select, Text } from "@mantine/core";
-import { Exercise, ExerciseName } from "@/core/exercises";
-import { ReactNode, useState } from "react";
-import { TrainingSession, makeTrainingSession } from "@/core/training-session";
-
-import { DataListItem } from "@/components/data-list-item/DataListItem";
-import { ExerciseForm } from "@/components/exercise/exercise-form";
-import { Form } from "@mantine/form";
-import { TrainingPlayer } from "@/components/training-player/TrainingPlayer";
 import { TrainingSessionForm } from "@/components/training-session/training-session-form";
-import { getDefaultExercise } from "@/core/note-recognition";
-import { updateItemAtIndex } from "@/core/utils";
-
-type ScreenState =
-  | { kind: "exercise-select" }
-  | { kind: "exercise-edit"; exercise: Exercise; editIndex?: number }
-  | { kind: "playing" };
-
-function getExerciseListProps(exercise: Exercise): {
-  title: ReactNode;
-  description: ReactNode;
-} {
-  switch (exercise.type) {
-    case "note-recognition":
-      return {
-        title: "Note Recognition",
-        description: `${exercise.config.noteDuration} second notes for ${exercise.config.totalDuration} seconds`,
-      };
-    case "scales":
-      return {
-        title: "Scales",
-        description: `${exercise.config.tempo} BPM for ${exercise.config.totalDuration} seconds`,
-      };
-    case "cycle4":
-      return {
-        title: "Cycle 4",
-        description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
-      };
-    case "timed-pitches":
-      return {
-        title: exercise.config.title,
-        description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
-      };
-  }
-}
+import { createTrainingSession } from "@/core/api";
+import { makeTrainingSession } from "@/core/training-session";
+import { useNavigate } from "@tanstack/react-router";
 
 /**
  * Allows the use to build a training course comprised of a set of exercises.
@@ -50,102 +9,20 @@ function getExerciseListProps(exercise: Exercise): {
  * In the future, you will be able to save the training and run it later.
  */
 export function TrainingSessionCreatePage() {
-  const [trainingSession, setTrainingSession] = useState<TrainingSession>(
-    makeTrainingSession(),
-  );
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [screenState, setScreenState] = useState<ScreenState>({
-    kind: "exercise-select",
-  });
-
-  const handleExerciseSubmit = (
-    exercise: Exercise,
-    editIndex: number | null,
-  ) => {
-    setExercises((current) =>
-      editIndex !== null
-        ? updateItemAtIndex(current, editIndex, exercise)
-        : [...current, exercise],
-    );
-    setScreenState({ kind: "exercise-select" });
-  };
-
-  const handleTrainingEnd = () => {
-    setScreenState({ kind: "exercise-select" });
-  };
-
-  const handleExerciseRemove = (index: number) => {
-    setExercises(exercises.filter((_, i) => i !== index));
-  };
+  const nav = useNavigate();
 
   return (
     <div>
-      {screenState.kind === "exercise-select" && (
-        <>
-          {/* <h1>Create a Training Session</h1>
-          <p>
-            A training session is a collection of exercises which help you
-            practice a specific skill.
-          </p> */}
-          {/* <Select
-            data={[
-              { label: "Timed Pitches", value: "timed-pitches" },
-              { label: "Note Recognition", value: "note-recognition" },
-              { label: "Scales", value: "scales" },
-              { label: "Cycle 4", value: "cycle4" },
-            ]}
-            placeholder="Select an exercise"
-            searchable={false}
-            mb="lg"
-            onChange={(e) => {
-              setScreenState({
-                kind: "exercise-edit",
-                exercise: getDefaultExercise(e as ExerciseName),
-              });
-            }}
-            comboboxProps={{ offset: 0 }}
-          /> */}
-          {/* <label>Exercises</label>
-          {exercises.length === 0 && <Center>Add an exercise</Center>}
-          {exercises.map((exercise, index) => (
-            <DataListItem
-              key={index}
-              symbol={index + 1}
-              onEdit={() =>
-                setScreenState({
-                  kind: "exercise-edit",
-                  exercise,
-                  editIndex: index,
-                })
-              }
-              onRemove={() => handleExerciseRemove(index)}
-              {...getExerciseListProps(exercise)}
-            />
-          ))}
-
-          {exercises.length > 0 && (
-            <Button onClick={() => setScreenState({ kind: "playing" })}>
-              Start!
-            </Button>
-          )} */}
-
-          <TrainingSessionForm data={trainingSession} />
-        </>
-      )}
-
-      {screenState.kind === "exercise-edit" && (
-        <ExerciseForm
-          data={screenState.exercise}
-          onSubmit={(x) =>
-            handleExerciseSubmit(x, screenState.editIndex ?? null)
-          }
-          onCancel={() => setScreenState({ kind: "exercise-select" })}
-        />
-      )}
-
-      {screenState.kind === "playing" && (
-        <TrainingPlayer exercises={exercises} onEnd={handleTrainingEnd} />
-      )}
+      <TrainingSessionForm
+        data={makeTrainingSession()}
+        onSubmit={(formData) => {
+          createTrainingSession(formData);
+          nav({ to: "/training-sessions" });
+        }}
+        onCancel={() => {
+          nav({ to: "/training-sessions" });
+        }}
+      />
     </div>
   );
 }

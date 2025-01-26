@@ -6,7 +6,7 @@ type FormButtonsProps = {
 };
 
 export function FormButtons({
-  submitText = "Submit",
+  submitText = "Save",
   onCancel,
 }: FormButtonsProps) {
   return (
