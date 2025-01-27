@@ -1,4 +1,5 @@
-import { Button, Center } from "@mantine/core";
+import { ActionIcon, Button, Center, Flex } from "@mantine/core";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { Exercise } from "@/core/practice-session";
@@ -39,9 +40,21 @@ export function ExercisesPlayer({ exercises, onEnd }: ExercisesPlayerProps) {
         config={exercises[currentExerciseIndex].config}
         onEnd={handleOnExerciseEnd}
       />
-      <Center>
+      <Flex justify="space-between" gap="sm">
+        <ActionIcon
+          onClick={() => setCurrentExerciseIndex((x) => x - 1)}
+          disabled={currentExerciseIndex === 0}
+        >
+          <IconChevronLeft />
+        </ActionIcon>
         <Button onClick={onEnd}>Exit</Button>
-      </Center>
+        <ActionIcon
+          onClick={() => setCurrentExerciseIndex((x) => x + 1)}
+          disabled={currentExerciseIndex === exercises.length - 1}
+        >
+          <IconChevronRight />
+        </ActionIcon>
+      </Flex>
     </>
   );
 }
