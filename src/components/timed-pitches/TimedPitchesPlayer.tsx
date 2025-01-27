@@ -1,4 +1,4 @@
-import "./timed-pitches-player.css";
+import "./TimedPitchesPlayer.css";
 
 import { Flex, Title } from "@mantine/core";
 import { cycle4Notes, noteFrequencies } from "@/core/notes";

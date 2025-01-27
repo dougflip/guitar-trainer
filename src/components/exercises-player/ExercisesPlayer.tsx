@@ -2,7 +2,7 @@ import { Button, Center } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 
 import { Exercise } from "@/core/practice-session";
-import { TimedPitchesPlayer } from "@/components/timed-pitches/timed-pitches-player";
+import { TimedPitchesPlayer } from "@/components/timed-pitches/TimedPitchesPlayer";
 import { useWakeLock } from "react-screen-wake-lock";
 
 type ExercisesPlayerProps = {

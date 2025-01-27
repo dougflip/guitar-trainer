@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 
 import { PracticeSession } from "@/core/practice-session";
-import { PracticeSessionForm } from "@/components/practice-session/practice-session-form";
+import { PracticeSessionForm } from "@/components/practice-session/PracticeSessionForm";
 
 /**
  * Page level component which allows a user to edit an existing practice session.

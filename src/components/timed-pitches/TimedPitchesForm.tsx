@@ -2,7 +2,7 @@ import { Exercise, ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import { TextInput, Textarea, Title } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 
-import { FormButtons } from "@/components/form/form-buttons";
+import { FormButtons } from "@/components/form/FormButtons";
 import { z } from "zod";
 
 type TimedPitchesFormProps = {

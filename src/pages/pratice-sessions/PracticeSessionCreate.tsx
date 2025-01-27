@@ -1,4 +1,4 @@
-import { PracticeSessionForm } from "@/components/practice-session/practice-session-form";
+import { PracticeSessionForm } from "@/components/practice-session/PracticeSessionForm";
 import { createPracticeSession } from "@/core/api";
 import { makePracticeSession } from "@/core/practice-session";
 import { useNavigate } from "@tanstack/react-router";
