@@ -5,6 +5,7 @@ import { cycle4Notes, noteFrequencies } from "@/core/notes";
 import { useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
+import clsx from "clsx";
 import { createMetronome } from "@/core/sound/metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 
@@ -70,7 +71,9 @@ export function TimedPitchesPlayer({ config, onEnd }: TimedPitchesPlayerProps) {
       <Title order={3} my="sm">
         {config.title}
       </Title>
-      {note && <span className="c4p-note">{note}</span>}
+      <span className={clsx("c4p-note", { "is-invisible": !note })}>
+        {note || "A"}
+      </span>
     </Flex>
   );
 }

@@ -5,3 +5,7 @@
   color: #424242;
   font-weight: 800;
 }
+
+.c4p-note.is-invisible {
+  visibility: hidden;
+}
