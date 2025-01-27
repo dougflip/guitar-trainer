@@ -4,7 +4,7 @@ import { Flex, Title } from "@mantine/core";
 import { cycle4Notes, noteFrequencies } from "@/core/notes";
 import { useEffect, useRef, useState } from "react";
 
-import { ExerciseTimedPitchesConfig } from "@/core/exercises";
+import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import { createMetronome } from "@/core/sound/metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 
@@ -63,7 +63,7 @@ export function TimedPitchesPlayer({ config, onEnd }: TimedPitchesPlayerProps) {
       metronome.stop();
       pitchGenerator.dispose();
     };
-  }, [config.tempo, config.numberOfCycles, config.beatsPerNote, onEnd]);
+  }, [config, onEnd]);
 
   return (
     <Flex direction="column" align="center">

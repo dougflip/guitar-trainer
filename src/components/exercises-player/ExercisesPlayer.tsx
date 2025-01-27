@@ -10,13 +10,6 @@ type ExercisesPlayerProps = {
   onEnd: () => void;
 };
 
-function renderExercise(exercise: Exercise, onEnd: () => void) {
-  switch (exercise.type) {
-    case "timed-pitches":
-      return <TimedPitchesPlayer config={exercise.config} onEnd={onEnd} />;
-  }
-}
-
 /**
  * Can "play" through a collection of exercises.
  */
@@ -41,7 +34,11 @@ export function ExercisesPlayer({ exercises, onEnd }: ExercisesPlayerProps) {
 
   return (
     <>
-      {renderExercise(exercises[currentExerciseIndex], handleOnExerciseEnd)}
+      <TimedPitchesPlayer
+        key={currentExerciseIndex}
+        config={exercises[currentExerciseIndex].config}
+        onEnd={handleOnExerciseEnd}
+      />
       <Center>
         <Button onClick={onEnd}>Exit</Button>
       </Center>

@@ -6,7 +6,7 @@ import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { FormButtons } from "@/components/form/FormButtons";
 import { PracticeSession } from "@/core/practice-session";
 import { TimedPitchesForm } from "@/components/timed-pitches/TimedPitchesForm";
-import { getDefaultTimedPitchesExercise } from "@/core/note-recognition";
+import { getDefaultTimedPitchesExercise } from "@/core/practice-session";
 import { useForm } from "@mantine/form";
 
 type PracticeSessionFormProps = {
