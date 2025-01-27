@@ -1,39 +1,26 @@
+import { Button, Center } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 
-import { Exercise } from "@/core/exercises";
-import { NoteRecognitionPlayer } from "@/components/note-recognition/NoteRecognitionPlayer";
-import { useWakeLock } from "react-screen-wake-lock";
-import { BasicScalePlayer } from "@/components/basic-scale/BasicScalePlayer";
-import { Button, Center } from "@mantine/core";
-import { Cycle4Player } from "@/components/cycle4/cycle4-player";
+import { Exercise } from "@/core/practice-session";
 import { TimedPitchesPlayer } from "@/components/timed-pitches/timed-pitches-player";
+import { useWakeLock } from "react-screen-wake-lock";
 
-type TrainingPlayerProps = {
+type ExercisesPlayerProps = {
   exercises: Exercise[];
   onEnd: () => void;
 };
 
 function renderExercise(exercise: Exercise, onEnd: () => void) {
   switch (exercise.type) {
-    case "note-recognition":
-      return <NoteRecognitionPlayer config={exercise.config} onEnd={onEnd} />;
-    case "scales":
-      return <BasicScalePlayer config={exercise.config} onEnd={onEnd} />;
-    case "cycle4":
-      return <Cycle4Player config={exercise.config} onEnd={onEnd} />;
     case "timed-pitches":
       return <TimedPitchesPlayer config={exercise.config} onEnd={onEnd} />;
-    default:
-      console.warn("Unknown exercise: ", exercise satisfies never);
-      return null;
   }
 }
 
 /**
- * Can "play" through a training which is a collection of exercises.
- * An exercise is still TBD, but probably at a minumum is something with a total duration.
+ * Can "play" through a collection of exercises.
  */
-export function TrainingPlayer({ exercises, onEnd }: TrainingPlayerProps) {
+export function ExercisesPlayer({ exercises, onEnd }: ExercisesPlayerProps) {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
 

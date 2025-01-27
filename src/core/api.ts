@@ -1,73 +1,73 @@
-import { TrainingSession } from "@/core/training-session";
+import { PracticeSession } from "@/core/practice-session";
 
-const lsTrainingSessionsKey = "dougflip:guitar-trainer:training-sessions";
+const lsPracticeSessionsKey = "dougflip:guitar-trainer:practice-sessions";
 
-type TrainingSessionsInStorage = Record<string, TrainingSession>;
+type PracticeSessionsInStorage = Record<string, PracticeSession>;
 
-function readAllSessions(): TrainingSessionsInStorage {
-  const itemJsonOrNull = localStorage.getItem(lsTrainingSessionsKey);
+function readAllSessions(): PracticeSessionsInStorage {
+  const itemJsonOrNull = localStorage.getItem(lsPracticeSessionsKey);
   return itemJsonOrNull ? JSON.parse(itemJsonOrNull) : {};
 }
 
 /**
- * Fetches all training sessions.
+ * Fetches all practice sessions.
  */
-export function fetchTrainingSessions(): TrainingSession[] {
+export function fetchPracticeSessions(): PracticeSession[] {
   try {
-    const items: TrainingSessionsInStorage = readAllSessions();
+    const items: PracticeSessionsInStorage = readAllSessions();
     return Object.values(items);
   } catch (error) {
-    console.error("Error fetching training session", error);
+    console.error("Error fetching practice session", error);
     return [];
   }
 }
 
-export function fetchTrainingSession(id: string): TrainingSession {
-  const items: TrainingSessionsInStorage = readAllSessions();
+export function fetchPracticeSession(id: string): PracticeSession {
+  const items: PracticeSessionsInStorage = readAllSessions();
   return items[id];
 }
 
 /**
- * Creates a new training session.
+ * Creates a new practice session.
  */
-export function createTrainingSession(ts: TrainingSession) {
-  // read and parse training sessions from local storage
+export function createPracticeSession(ts: PracticeSession) {
+  // read and parse practice sessions from local storage
   try {
-    const items: TrainingSessionsInStorage = readAllSessions();
+    const items: PracticeSessionsInStorage = readAllSessions();
     const itemWithId = { ...ts, id: crypto.randomUUID() };
     localStorage.setItem(
-      lsTrainingSessionsKey,
+      lsPracticeSessionsKey,
       JSON.stringify({ ...items, [itemWithId.id]: itemWithId }),
     );
     return itemWithId;
   } catch (error) {
-    console.error("Error creating training session", error);
+    console.error("Error creating practice session", error);
     return ts;
   }
 }
 
-export function updateTrainingSession(ts: TrainingSession): TrainingSession {
+export function updatePracticeSession(ts: PracticeSession): PracticeSession {
   try {
-    const items: TrainingSessionsInStorage = readAllSessions();
+    const items: PracticeSessionsInStorage = readAllSessions();
     localStorage.setItem(
-      lsTrainingSessionsKey,
+      lsPracticeSessionsKey,
       JSON.stringify({ ...items, [ts.id]: ts }),
     );
     return ts;
   } catch (error) {
-    console.error("Error updating training session", error);
+    console.error("Error updating practice session", error);
     return ts;
   }
 }
 
-export function deleteTrainingSession(id: string): TrainingSession[] {
+export function deletePracticeSession(id: string): PracticeSession[] {
   try {
-    const items: TrainingSessionsInStorage = readAllSessions();
+    const items: PracticeSessionsInStorage = readAllSessions();
     delete items[id];
-    localStorage.setItem(lsTrainingSessionsKey, JSON.stringify(items));
+    localStorage.setItem(lsPracticeSessionsKey, JSON.stringify(items));
     return Object.values(items);
   } catch (error) {
-    console.error("Error deleting training session", error);
+    console.error("Error deleting practice session", error);
     return [];
   }
 }

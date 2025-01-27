@@ -9,24 +9,27 @@ import {
 } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { deleteTrainingSession, fetchTrainingSessions } from "@/core/api";
+import { deletePracticeSession, fetchPracticeSessions } from "@/core/api";
 import { useEffect, useState } from "react";
 
-import { TrainingSession } from "@/core/training-session";
+import { PracticeSession } from "@/core/practice-session";
 import { useDisclosure } from "@mantine/hooks";
 
-export function TrainingSessions() {
+/**
+ * Page level component which displays a list of saved practice sessions.
+ */
+export function PracticeSessions() {
   const nav = useNavigate();
-  const [sessions, setSessions] = useState<TrainingSession[]>([]);
+  const [sessions, setSessions] = useState<PracticeSession[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
   const [deleteId, setDeleteId] = useState<string>("");
 
   useEffect(() => {
-    setSessions(fetchTrainingSessions());
+    setSessions(fetchPracticeSessions());
   }, []);
 
   function handleItemDelete(id: string) {
-    setSessions(deleteTrainingSession(id));
+    setSessions(deletePracticeSession(id));
     close();
   }
 
@@ -34,7 +37,7 @@ export function TrainingSessions() {
     <>
       <Modal opened={opened} onClose={close} title="Confirm Delete">
         <Modal.Body>
-          <Text>Are you sure you want to delete this training session?</Text>
+          <Text>Are you sure you want to delete this practice session?</Text>
         </Modal.Body>
         <Flex justify="end" gap="xs">
           <Button variant="outline" onClick={close}>
@@ -46,7 +49,7 @@ export function TrainingSessions() {
         </Flex>
       </Modal>
       <Flex justify="end">
-        <Button component={Link} to="/training-sessions/create">
+        <Button component={Link} to="/practice-sessions/create">
           + Add
         </Button>
       </Flex>
@@ -62,7 +65,7 @@ export function TrainingSessions() {
           {sessions.length === 0 && (
             <Table.Tr>
               <Table.Td colSpan={3}>
-                <Center c="gray">No training sessions found</Center>
+                <Center c="gray">No practice sessions found</Center>
               </Table.Td>
             </Table.Tr>
           )}
@@ -70,7 +73,7 @@ export function TrainingSessions() {
             <Table.Tr key={session.id}>
               <Table.Td>
                 <Link
-                  to="/training-sessions/$id/play"
+                  to="/practice-sessions/$id/play"
                   params={{ id: session.id }}
                 >
                   {session.title}
@@ -82,7 +85,7 @@ export function TrainingSessions() {
                   <ActionIcon
                     onClick={() => {
                       nav({
-                        to: "/training-sessions/$id",
+                        to: "/practice-sessions/$id",
                         params: { id: session.id },
                       });
                     }}

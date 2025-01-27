@@ -21,16 +21,16 @@ export type ExerciseTimedPitches = {
 
 export type Exercise = ExerciseTimedPitches;
 
-export type TrainingSession = {
+export type PracticeSession = {
   id: string;
   title: string;
   description: string;
   exercises: Exercise[];
 };
 
-export function makeTrainingSession(
-  overrides: Partial<TrainingSession> = {},
-): TrainingSession {
+export function makePracticeSession(
+  overrides: Partial<PracticeSession> = {},
+): PracticeSession {
   return {
     id: "",
     title: "",

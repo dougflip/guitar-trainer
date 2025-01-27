@@ -37,7 +37,7 @@ export function MainAppShell() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <NavLink component={Link} to="/" label="My Training Sessions" />
+        <NavLink component={Link} to="/" label="My Practice Sessions" />
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />

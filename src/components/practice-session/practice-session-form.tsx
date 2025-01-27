@@ -1,17 +1,17 @@
 import { Button, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
-import { Exercise, ExerciseTimedPitches } from "@/core/training-session";
+import { Exercise, ExerciseTimedPitches } from "@/core/practice-session";
 import { ReactNode, useState } from "react";
 
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { FormButtons } from "@/components/form/form-buttons";
+import { PracticeSession } from "@/core/practice-session";
 import { TimedPitchesForm } from "@/components/timed-pitches/timed-pitches-form";
-import { TrainingSession } from "@/core/training-session";
 import { getDefaultTimedPitchesExercise } from "@/core/note-recognition";
 import { useForm } from "@mantine/form";
 
-type TrainingSessionFormProps = {
-  data: TrainingSession;
-  onSubmit: (data: TrainingSession) => void;
+type PracticeSessionFormProps = {
+  data: PracticeSession;
+  onSubmit: (data: PracticeSession) => void;
   onCancel: () => void;
 };
 
@@ -33,11 +33,11 @@ function getExerciseListProps(exercise: Exercise): {
   };
 }
 
-export function TrainingSessionForm({
+export function PracticeSessionForm({
   data,
   onSubmit,
   onCancel,
-}: TrainingSessionFormProps) {
+}: PracticeSessionFormProps) {
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
   const form = useForm({ initialValues: data });
 
@@ -50,7 +50,7 @@ export function TrainingSessionForm({
     setScreenState({ kind: "form" });
   }
 
-  function handleSubmit(formData: TrainingSession) {
+  function handleSubmit(formData: PracticeSession) {
     onSubmit({ ...data, ...formData });
   }
 
@@ -60,26 +60,21 @@ export function TrainingSessionForm({
     <>
       {screenState.kind === "form" && (
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Title order={2}>Create a Training Session</Title>
+          <Title order={2}>Create a Practice Session</Title>
           <p>
-            A training session is a collection of exercises which help you
-            practice a specific skill.
+            A practice session is a collection of exercises which help you drill
+            a specific skill.
           </p>
           <TextInput
             withAsterisk
             label="Title"
-            description="The title of the training session"
+            placeholder="Triads"
             mb="lg"
             key={form.key("title")}
             {...form.getInputProps("title")}
           />
           <Stack mb="lg" gap="xs">
             <Text size="sm">Exercises</Text>
-            {exercises.length === 0 && (
-              <Text size="sm" c="gray">
-                Click below to add an exercise
-              </Text>
-            )}
             {exercises.map((exercise, index) => (
               <DataListItem
                 key={index}
@@ -109,6 +104,7 @@ export function TrainingSessionForm({
           </Stack>
           <Textarea
             label="Description"
+            placeholder="Work on playing triads across the neck."
             rows={4}
             mb="lg"
             key={form.key("description")}

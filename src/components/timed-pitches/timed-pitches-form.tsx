@@ -1,4 +1,4 @@
-import { Exercise, ExerciseTimedPitchesConfig } from "@/core/training-session";
+import { Exercise, ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import { TextInput, Textarea, Title } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 
