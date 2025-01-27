@@ -1,13 +1,11 @@
-.nrp-container {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.nrp-note {
+.c4p-note {
   font-size: clamp(2rem, 50dvh, 40dvh);
   line-height: 1;
   /* dark 4 */
   color: #424242;
   font-weight: 800;
+}
+
+.c4p-note.is-invisible {
+  visibility: hidden;
 }

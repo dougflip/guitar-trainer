@@ -12,7 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
-import { Route as TrainingSessionsCreateImport } from './routes/training-sessions/create'
+import { Route as PracticeSessionsIndexImport } from './routes/practice-sessions/index'
+import { Route as PracticeSessionsCreateImport } from './routes/practice-sessions/create'
+import { Route as PracticeSessionsIdIndexImport } from './routes/practice-sessions/$id/index'
+import { Route as PracticeSessionsIdPlayImport } from './routes/practice-sessions/$id/play'
 
 // Create/Update Routes
 
@@ -22,9 +25,27 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const TrainingSessionsCreateRoute = TrainingSessionsCreateImport.update({
-  id: '/training-sessions/create',
-  path: '/training-sessions/create',
+const PracticeSessionsIndexRoute = PracticeSessionsIndexImport.update({
+  id: '/practice-sessions/',
+  path: '/practice-sessions/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PracticeSessionsCreateRoute = PracticeSessionsCreateImport.update({
+  id: '/practice-sessions/create',
+  path: '/practice-sessions/create',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PracticeSessionsIdIndexRoute = PracticeSessionsIdIndexImport.update({
+  id: '/practice-sessions/$id/',
+  path: '/practice-sessions/$id/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PracticeSessionsIdPlayRoute = PracticeSessionsIdPlayImport.update({
+  id: '/practice-sessions/$id/play',
+  path: '/practice-sessions/$id/play',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,11 +60,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/training-sessions/create': {
-      id: '/training-sessions/create'
-      path: '/training-sessions/create'
-      fullPath: '/training-sessions/create'
-      preLoaderRoute: typeof TrainingSessionsCreateImport
+    '/practice-sessions/create': {
+      id: '/practice-sessions/create'
+      path: '/practice-sessions/create'
+      fullPath: '/practice-sessions/create'
+      preLoaderRoute: typeof PracticeSessionsCreateImport
+      parentRoute: typeof rootRoute
+    }
+    '/practice-sessions/': {
+      id: '/practice-sessions/'
+      path: '/practice-sessions'
+      fullPath: '/practice-sessions'
+      preLoaderRoute: typeof PracticeSessionsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/practice-sessions/$id/play': {
+      id: '/practice-sessions/$id/play'
+      path: '/practice-sessions/$id/play'
+      fullPath: '/practice-sessions/$id/play'
+      preLoaderRoute: typeof PracticeSessionsIdPlayImport
+      parentRoute: typeof rootRoute
+    }
+    '/practice-sessions/$id/': {
+      id: '/practice-sessions/$id/'
+      path: '/practice-sessions/$id'
+      fullPath: '/practice-sessions/$id'
+      preLoaderRoute: typeof PracticeSessionsIdIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -53,37 +95,68 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/training-sessions/create': typeof TrainingSessionsCreateRoute
+  '/practice-sessions/create': typeof PracticeSessionsCreateRoute
+  '/practice-sessions': typeof PracticeSessionsIndexRoute
+  '/practice-sessions/$id/play': typeof PracticeSessionsIdPlayRoute
+  '/practice-sessions/$id': typeof PracticeSessionsIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/training-sessions/create': typeof TrainingSessionsCreateRoute
+  '/practice-sessions/create': typeof PracticeSessionsCreateRoute
+  '/practice-sessions': typeof PracticeSessionsIndexRoute
+  '/practice-sessions/$id/play': typeof PracticeSessionsIdPlayRoute
+  '/practice-sessions/$id': typeof PracticeSessionsIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/training-sessions/create': typeof TrainingSessionsCreateRoute
+  '/practice-sessions/create': typeof PracticeSessionsCreateRoute
+  '/practice-sessions/': typeof PracticeSessionsIndexRoute
+  '/practice-sessions/$id/play': typeof PracticeSessionsIdPlayRoute
+  '/practice-sessions/$id/': typeof PracticeSessionsIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/training-sessions/create'
+  fullPaths:
+    | '/'
+    | '/practice-sessions/create'
+    | '/practice-sessions'
+    | '/practice-sessions/$id/play'
+    | '/practice-sessions/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/training-sessions/create'
-  id: '__root__' | '/' | '/training-sessions/create'
+  to:
+    | '/'
+    | '/practice-sessions/create'
+    | '/practice-sessions'
+    | '/practice-sessions/$id/play'
+    | '/practice-sessions/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/practice-sessions/create'
+    | '/practice-sessions/'
+    | '/practice-sessions/$id/play'
+    | '/practice-sessions/$id/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  TrainingSessionsCreateRoute: typeof TrainingSessionsCreateRoute
+  PracticeSessionsCreateRoute: typeof PracticeSessionsCreateRoute
+  PracticeSessionsIndexRoute: typeof PracticeSessionsIndexRoute
+  PracticeSessionsIdPlayRoute: typeof PracticeSessionsIdPlayRoute
+  PracticeSessionsIdIndexRoute: typeof PracticeSessionsIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TrainingSessionsCreateRoute: TrainingSessionsCreateRoute,
+  PracticeSessionsCreateRoute: PracticeSessionsCreateRoute,
+  PracticeSessionsIndexRoute: PracticeSessionsIndexRoute,
+  PracticeSessionsIdPlayRoute: PracticeSessionsIdPlayRoute,
+  PracticeSessionsIdIndexRoute: PracticeSessionsIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,14 +170,26 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/training-sessions/create"
+        "/practice-sessions/create",
+        "/practice-sessions/",
+        "/practice-sessions/$id/play",
+        "/practice-sessions/$id/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/training-sessions/create": {
-      "filePath": "training-sessions/create.tsx"
+    "/practice-sessions/create": {
+      "filePath": "practice-sessions/create.tsx"
+    },
+    "/practice-sessions/": {
+      "filePath": "practice-sessions/index.tsx"
+    },
+    "/practice-sessions/$id/play": {
+      "filePath": "practice-sessions/$id/play.tsx"
+    },
+    "/practice-sessions/$id/": {
+      "filePath": "practice-sessions/$id/index.tsx"
     }
   }
 }

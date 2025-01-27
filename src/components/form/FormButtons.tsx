@@ -1,16 +1,20 @@
 import { Button, Flex } from "@mantine/core";
 
 type FormButtonsProps = {
+  submitText?: string;
   onCancel: () => void;
 };
 
-export function FormButtons({ onCancel }: FormButtonsProps) {
+export function FormButtons({
+  submitText = "Save",
+  onCancel,
+}: FormButtonsProps) {
   return (
     <Flex mt="lg" columnGap={5}>
       <Button type="button" onClick={onCancel} variant="outline">
         Cancel
       </Button>
-      <Button type="submit">Submit</Button>
+      <Button type="submit">{submitText}</Button>
     </Flex>
   );
 }

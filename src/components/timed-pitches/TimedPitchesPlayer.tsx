@@ -1,19 +1,20 @@
-import "./cycle4-player.css";
+import "./TimedPitchesPlayer.css";
 
+import { Flex, Title } from "@mantine/core";
 import { cycle4Notes, noteFrequencies } from "@/core/notes";
 import { useEffect, useRef, useState } from "react";
 
-import { Center } from "@mantine/core";
-import { Cycle4Config } from "@/core/exercises";
+import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
+import clsx from "clsx";
 import { createMetronome } from "@/core/sound/metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 
-type Cycle4PlayerProps = {
-  config: Cycle4Config;
+type TimedPitchesPlayerProps = {
+  config: ExerciseTimedPitchesConfig;
   onEnd: () => void;
 };
 
-export function Cycle4Player({ config, onEnd }: Cycle4PlayerProps) {
+export function TimedPitchesPlayer({ config, onEnd }: TimedPitchesPlayerProps) {
   // default the screen to "empty" state
   // we use the metronome to sync state changes and we want to initialize on the first beat
   const noteIndex = useRef(-1);
@@ -63,12 +64,16 @@ export function Cycle4Player({ config, onEnd }: Cycle4PlayerProps) {
       metronome.stop();
       pitchGenerator.dispose();
     };
-  }, [config.tempo, config.numberOfCycles, config.beatsPerNote, onEnd]);
+  }, [config, onEnd]);
 
   return (
-    <div>
-      <h1>Cycle 4 Player</h1>
-      {note && <Center className="c4p-note">{note}</Center>}
-    </div>
+    <Flex direction="column" align="center">
+      <Title order={3} my="sm">
+        {config.title}
+      </Title>
+      <span className={clsx("c4p-note", { "is-invisible": !note })}>
+        {note || "A"}
+      </span>
+    </Flex>
   );
 }
