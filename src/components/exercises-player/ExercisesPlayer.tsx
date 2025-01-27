@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Center, Flex } from "@mantine/core";
+import { ActionIcon, Button, Flex } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
