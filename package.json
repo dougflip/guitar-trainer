@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "compile": "tsc -b --noEmit",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
     "lint:code": " eslint .",
     "lint": "concurrently \"npm:format:check\" \"npm:lint:code\" \"npm:compile\"",
-    "test": "vitest"
+    "test": "vitest",
+    "test:ci": "CI=1 TZ=UTC vitest run"
   },
   "dependencies": {
     "@mantine/core": "^7.15.2",
