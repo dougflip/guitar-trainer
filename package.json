@@ -10,7 +10,8 @@
     "format": "prettier --write src",
     "format:check": "prettier --check src",
     "lint:code": " eslint .",
-    "lint": "concurrently \"npm:format:check\" \"npm:lint:code\" \"npm:compile\""
+    "lint": "concurrently \"npm:format:check\" \"npm:lint:code\" \"npm:compile\"",
+    "test": "vitest"
   },
   "dependencies": {
     "@mantine/core": "^7.15.2",
@@ -46,6 +47,7 @@
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.4"
   }
 }

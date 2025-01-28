@@ -1,12 +1,16 @@
 import { Button, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
 import { Exercise, ExerciseTimedPitches } from "@/core/practice-session";
 import { ReactNode, useState } from "react";
+import {
+  getTimeForSingleExercise,
+  secondsToApproximateMinutes,
+} from "@/core/utils";
 
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { FormButtons } from "@/components/form/FormButtons";
 import { PracticeSession } from "@/core/practice-session";
 import { TimedPitchesForm } from "@/components/timed-pitches/TimedPitchesForm";
-import { getDefaultTimedPitchesExercise } from "@/core/practice-session";
+import { makeTimedPitchesExercise } from "@/core/practice-session";
 import { useForm } from "@mantine/form";
 
 type PracticeSessionFormProps = {
@@ -29,7 +33,7 @@ function getExerciseListProps(exercise: Exercise): {
 } {
   return {
     title: exercise.config.title,
-    description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
+    description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"} ~${secondsToApproximateMinutes(getTimeForSingleExercise(exercise))}`,
   };
 }
 
@@ -95,7 +99,7 @@ export function PracticeSessionForm({
               onClick={() =>
                 setScreenState({
                   kind: "exercise-edit",
-                  exercise: getDefaultTimedPitchesExercise(),
+                  exercise: makeTimedPitchesExercise(),
                 })
               }
             >

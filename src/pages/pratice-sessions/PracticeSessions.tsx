@@ -10,6 +10,10 @@ import {
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { deletePracticeSession, fetchPracticeSessions } from "@/core/api";
+import {
+  getTimeForPracticeSession,
+  secondsToApproximateMinutes,
+} from "@/core/utils";
 import { useEffect, useState } from "react";
 
 import { PracticeSession } from "@/core/practice-session";
@@ -58,6 +62,7 @@ export function PracticeSessions() {
           <Table.Tr>
             <Table.Th>Title</Table.Th>
             <Table.Th>Number of exercises</Table.Th>
+            <Table.Th>Duration</Table.Th>
             <Table.Th></Table.Th>
           </Table.Tr>
         </Table.Thead>
@@ -80,6 +85,12 @@ export function PracticeSessions() {
                 </Link>
               </Table.Td>
               <Table.Td>{session.exercises.length}</Table.Td>
+              <Table.Td>
+                ~
+                {secondsToApproximateMinutes(
+                  getTimeForPracticeSession(session),
+                )}
+              </Table.Td>
               <Table.Td>
                 <Flex justify="end" gap="sm">
                   <ActionIcon
