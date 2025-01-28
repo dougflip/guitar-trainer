@@ -16,7 +16,9 @@ import { useForm } from "@mantine/form";
 type PracticeSessionFormProps = {
   data: PracticeSession;
   onSubmit: (data: PracticeSession) => void;
+  onPreview: (data: PracticeSession) => void;
   onCancel: () => void;
+  className?: string;
 };
 
 type ScreenState =
@@ -40,7 +42,9 @@ function getExerciseListProps(exercise: Exercise): {
 export function PracticeSessionForm({
   data,
   onSubmit,
+  onPreview,
   onCancel,
+  className,
 }: PracticeSessionFormProps) {
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
   const form = useForm({ initialValues: data });
@@ -54,6 +58,10 @@ export function PracticeSessionForm({
     setScreenState({ kind: "form" });
   }
 
+  function handlePlay() {
+    onPreview({ ...data, ...form.getValues() });
+  }
+
   function handleSubmit(formData: PracticeSession) {
     onSubmit({ ...data, ...formData });
   }
@@ -61,7 +69,7 @@ export function PracticeSessionForm({
   const exercises = form.getValues().exercises;
 
   return (
-    <>
+    <div className={className}>
       {screenState.kind === "form" && (
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Title order={2}>Create a Practice Session</Title>
@@ -114,7 +122,15 @@ export function PracticeSessionForm({
             key={form.key("description")}
             {...form.getInputProps("description")}
           />
-          <FormButtons onCancel={onCancel} />
+          <FormButtons onCancel={onCancel}>
+            <Button
+              type="button"
+              onClick={handlePlay}
+              disabled={exercises.length === 0}
+            >
+              Preview
+            </Button>
+          </FormButtons>
         </form>
       )}
       {screenState.kind === "exercise-edit" && (
@@ -126,6 +142,6 @@ export function PracticeSessionForm({
           }
         />
       )}
-    </>
+    </div>
   );
 }
