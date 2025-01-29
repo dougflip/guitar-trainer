@@ -3,7 +3,7 @@ import { BPM, ZeroToOneHundred } from "@/core/base";
 import { notes } from "@/core/notes";
 import { shuffle } from "remeda";
 
-type NotePool = { kind: "circle-of-fourths" };
+export type NotePool = { kind: "circle-of-fourths" };
 
 /**
  * This single exercise will cover all of the existing exercises.
@@ -69,7 +69,7 @@ export function makeNoteGenerator(initialNotes: string[] = [...notes]) {
   };
 }
 
-export function getDefaultTimedPitchesExercise(
+export function makeTimedPitchesExercise(
   overrides: Partial<ExerciseTimedPitchesConfig> = {},
 ): ExerciseTimedPitches {
   return {

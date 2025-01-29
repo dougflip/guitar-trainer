@@ -1,18 +1,24 @@
 import { Button, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
 import { Exercise, ExerciseTimedPitches } from "@/core/practice-session";
 import { ReactNode, useState } from "react";
+import {
+  getTimeForSingleExercise,
+  secondsToApproximateMinutes,
+} from "@/core/utils";
 
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { FormButtons } from "@/components/form/FormButtons";
 import { PracticeSession } from "@/core/practice-session";
 import { TimedPitchesForm } from "@/components/timed-pitches/TimedPitchesForm";
-import { getDefaultTimedPitchesExercise } from "@/core/practice-session";
+import { makeTimedPitchesExercise } from "@/core/practice-session";
 import { useForm } from "@mantine/form";
 
 type PracticeSessionFormProps = {
   data: PracticeSession;
   onSubmit: (data: PracticeSession) => void;
+  onPreview: (data: PracticeSession) => void;
   onCancel: () => void;
+  className?: string;
 };
 
 type ScreenState =
@@ -29,14 +35,16 @@ function getExerciseListProps(exercise: Exercise): {
 } {
   return {
     title: exercise.config.title,
-    description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"}`,
+    description: `${exercise.config.tempo} BPM for ${exercise.config.numberOfCycles} ${exercise.config.numberOfCycles === 1 ? "cycle" : "cycles"} ~${secondsToApproximateMinutes(getTimeForSingleExercise(exercise))}`,
   };
 }
 
 export function PracticeSessionForm({
   data,
   onSubmit,
+  onPreview,
   onCancel,
+  className,
 }: PracticeSessionFormProps) {
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
   const form = useForm({ initialValues: data });
@@ -50,6 +58,10 @@ export function PracticeSessionForm({
     setScreenState({ kind: "form" });
   }
 
+  function handlePlay() {
+    onPreview({ ...data, ...form.getValues() });
+  }
+
   function handleSubmit(formData: PracticeSession) {
     onSubmit({ ...data, ...formData });
   }
@@ -57,7 +69,7 @@ export function PracticeSessionForm({
   const exercises = form.getValues().exercises;
 
   return (
-    <>
+    <div className={className}>
       {screenState.kind === "form" && (
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Title order={2}>Create a Practice Session</Title>
@@ -95,7 +107,7 @@ export function PracticeSessionForm({
               onClick={() =>
                 setScreenState({
                   kind: "exercise-edit",
-                  exercise: getDefaultTimedPitchesExercise(),
+                  exercise: makeTimedPitchesExercise(),
                 })
               }
             >
@@ -110,7 +122,15 @@ export function PracticeSessionForm({
             key={form.key("description")}
             {...form.getInputProps("description")}
           />
-          <FormButtons onCancel={onCancel} />
+          <FormButtons onCancel={onCancel}>
+            <Button
+              type="button"
+              onClick={handlePlay}
+              disabled={exercises.length === 0}
+            >
+              Preview
+            </Button>
+          </FormButtons>
         </form>
       )}
       {screenState.kind === "exercise-edit" && (
@@ -122,6 +142,6 @@ export function PracticeSessionForm({
           }
         />
       )}
-    </>
+    </div>
   );
 }
