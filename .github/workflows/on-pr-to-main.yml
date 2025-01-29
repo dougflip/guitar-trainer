@@ -12,5 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: "Install Dependencies"
+        run: npm ci
+
       - name: "Build and Verify the Code"
         run: ./scripts/build-and-verify-code.sh
