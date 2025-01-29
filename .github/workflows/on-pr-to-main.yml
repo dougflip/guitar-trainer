@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: "Build and Verify the Code"
-        run: ./scripts/build-and-verify-code
+        run: ./scripts/build-and-verify-code.sh
