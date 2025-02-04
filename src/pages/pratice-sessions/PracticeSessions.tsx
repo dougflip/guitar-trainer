@@ -17,7 +17,9 @@ import {
 import { useEffect, useState } from "react";
 
 import { PracticeSession } from "@/core/practice-session";
+import { practiceSessionQueries } from "@/queries";
 import { useDisclosure } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 
 /**
  * Page level component which displays a list of saved practice sessions.
@@ -27,6 +29,8 @@ export function PracticeSessions() {
   const [sessions, setSessions] = useState<PracticeSession[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
   const [deleteId, setDeleteId] = useState<string>("");
+
+  const practiceSessions = useQuery(practiceSessionQueries.list());
 
   useEffect(() => {
     setSessions(fetchPracticeSessions());
@@ -74,7 +78,7 @@ export function PracticeSessions() {
               </Table.Td>
             </Table.Tr>
           )}
-          {sessions.map((session) => (
+          {practiceSessions.data?.map((session) => (
             <Table.Tr key={session.id}>
               <Table.Td>
                 <Link
