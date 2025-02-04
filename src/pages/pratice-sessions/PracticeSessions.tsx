@@ -9,35 +9,29 @@ import {
 } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { deletePracticeSession, fetchPracticeSessions } from "@/core/api";
 import {
   getTimeForPracticeSession,
   secondsToApproximateMinutes,
 } from "@/core/utils";
-import { useEffect, useState } from "react";
+import { practiceSessionQueries, usePracticeSessionDelete } from "@/queries";
 
-import { PracticeSession } from "@/core/practice-session";
-import { practiceSessionQueries } from "@/queries";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 /**
  * Page level component which displays a list of saved practice sessions.
  */
 export function PracticeSessions() {
   const nav = useNavigate();
-  const [sessions, setSessions] = useState<PracticeSession[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
-  const [deleteId, setDeleteId] = useState<string>("");
+  const [deleteId, setDeleteId] = useState<number>(-1);
 
   const practiceSessions = useQuery(practiceSessionQueries.list());
+  const deletePracticeSession = usePracticeSessionDelete();
 
-  useEffect(() => {
-    setSessions(fetchPracticeSessions());
-  }, []);
-
-  function handleItemDelete(id: string) {
-    setSessions(deletePracticeSession(id));
+  function handleDeletePracticeSession() {
+    deletePracticeSession.mutate(deleteId);
     close();
   }
 
@@ -51,7 +45,7 @@ export function PracticeSessions() {
           <Button variant="outline" onClick={close}>
             Cancel
           </Button>
-          <Button color="red" onClick={() => handleItemDelete(deleteId)}>
+          <Button color="red" onClick={handleDeletePracticeSession}>
             Delete
           </Button>
         </Flex>
@@ -71,7 +65,7 @@ export function PracticeSessions() {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {sessions.length === 0 && (
+          {practiceSessions.data?.length === 0 && (
             <Table.Tr>
               <Table.Td colSpan={3}>
                 <Center c="gray">No practice sessions found</Center>
@@ -83,7 +77,7 @@ export function PracticeSessions() {
               <Table.Td>
                 <Link
                   to="/practice-sessions/$id/play"
-                  params={{ id: session.id }}
+                  params={{ id: session.id.toString() }}
                 >
                   {session.title}
                 </Link>
@@ -101,7 +95,7 @@ export function PracticeSessions() {
                     onClick={() => {
                       nav({
                         to: "/practice-sessions/$id",
-                        params: { id: session.id },
+                        params: { id: session.id.toString() },
                       });
                     }}
                     variant="outline"
