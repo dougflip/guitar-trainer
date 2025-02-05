@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 
 import { ExercisesPlayer } from "@/components/exercises-player/ExercisesPlayer";
-import { PracticeSession } from "@/core/practice-session";
-import { fetchPracticeSession } from "@/core/api";
+import { practiceSessionQueries } from "@/queries";
+import { useQuery } from "@tanstack/react-query";
 
 /**
  * Page level component which can "play" through an existing practice session.
@@ -11,19 +10,20 @@ import { fetchPracticeSession } from "@/core/api";
 export function PracticeSessionPlay() {
   const params = useParams({ from: "/practice-sessions/$id/play" });
   const nav = useNavigate();
-  const [session, setSession] = useState<PracticeSession | null>(null);
 
-  useEffect(() => {
-    setSession(fetchPracticeSession(params.id));
-  }, [params.id]);
+  // TODO: Router should expose params.id as a number
+  const practiceSession = useQuery(
+    practiceSessionQueries.detail(Number(params.id)),
+  );
 
-  if (!session) {
+  // TODO: Loader
+  if (!practiceSession.data) {
     return null;
   }
 
   return (
     <ExercisesPlayer
-      exercises={session.exercises}
+      exercises={practiceSession.data.exercises}
       onEnd={() => nav({ to: "/practice-sessions" })}
     />
   );

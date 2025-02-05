@@ -1,11 +1,12 @@
-import { fetchPracticeSession, updatePracticeSession } from "@/core/api";
-import { useEffect, useState } from "react";
+import { practiceSessionQueries, usePracticeSessionUpdate } from "@/queries";
 import { useNavigate, useParams } from "@tanstack/react-router";
 
 import { ExercisesPlayer } from "@/components/exercises-player/ExercisesPlayer";
 import { PracticeSession } from "@/core/practice-session";
 import { PracticeSessionForm } from "@/components/practice-session/PracticeSessionForm";
 import clsx from "clsx";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 type ScreenState =
   | { kind: "form" }
@@ -17,24 +18,28 @@ type ScreenState =
 export function PracticeSessionEditPage() {
   const params = useParams({ from: "/practice-sessions/$id/" });
   const nav = useNavigate();
-  const [session, setSession] = useState<PracticeSession | null>(null);
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
 
-  useEffect(() => {
-    setSession(fetchPracticeSession(params.id));
-  }, [params.id]);
+  // TODO: Router should expose params.id as a number
+  const practiceSession = useQuery(
+    practiceSessionQueries.detail(Number(params.id)),
+  );
+  const updatePracticeSession = usePracticeSessionUpdate({
+    onSuccess: () => nav({ to: "/practice-sessions" }),
+  });
 
-  function handleSubmit(formData: PracticeSession) {
-    updatePracticeSession(formData);
-    nav({ to: "/practice-sessions" });
+  // TODO: Loader
+  if (practiceSession.isLoading) {
+    return null;
   }
 
   return (
     <div>
-      {session && (
+      {practiceSession.data && (
         <PracticeSessionForm
-          data={session}
-          onSubmit={handleSubmit}
+          data={practiceSession.data}
+          title="Edit Practice Session"
+          onSubmit={updatePracticeSession.mutate}
           onPreview={(session) => setScreenState({ kind: "playing", session })}
           onCancel={() => {
             nav({ to: "/practice-sessions" });

@@ -37,7 +37,7 @@ export function makePracticeSession(
   overrides: Partial<PracticeSession> = {},
 ): PracticeSession {
   return {
-    id: "",
+    id: -1,
     title: "",
     description: "",
     exercises: [],

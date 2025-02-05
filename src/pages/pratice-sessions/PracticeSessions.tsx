@@ -35,6 +35,7 @@ export function PracticeSessions() {
     close();
   }
 
+  // TODO: Loader
   return (
     <>
       <Modal opened={opened} onClose={close} title="Confirm Delete">

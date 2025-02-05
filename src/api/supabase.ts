@@ -23,24 +23,32 @@ export async function fetchPracticeSession(
   return data;
 }
 
-export async function createPracticeSession(
-  ps: PracticeSession,
-): Promise<PracticeSession> {
-  await supabase.from("practice-sessions").insert(ps).throwOnError().select();
+export async function createPracticeSession({
+  id: _,
+  ...ps
+}: PracticeSession): Promise<PracticeSession> {
+  const response = await supabase
+    .from("practice-sessions")
+    .insert(ps)
+    .throwOnError()
+    .select()
+    .single();
 
-  return ps;
+  return response.data;
 }
 
 export async function updatePracticeSession(
   ps: PracticeSession,
 ): Promise<PracticeSession> {
-  await supabase
+  const response = await supabase
     .from("practice-sessions")
     .update(ps)
     .eq("id", ps.id)
-    .throwOnError();
+    .throwOnError()
+    .select()
+    .single();
 
-  return ps;
+  return response.data;
 }
 
 export async function deletePracticeSession(id: number): Promise<void> {

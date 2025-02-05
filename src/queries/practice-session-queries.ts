@@ -5,10 +5,14 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import {
+  createPracticeSession,
   deletePracticeSession,
   fetchPracticeSession,
   fetchPracticeSessions,
+  updatePracticeSession,
 } from "@/api";
+
+import { PracticeSession } from "@/core/practice-session";
 
 export const practiceSessionQueries = {
   all: () => ["practice-sessions"] as const,
@@ -23,6 +27,48 @@ export const practiceSessionQueries = {
       queryFn: () => fetchPracticeSession(id),
     }),
 };
+
+/**
+ * Mutation to create a practice session.
+ */
+export function usePracticeSessionCreate(
+  options: Partial<
+    UseMutationOptions<PracticeSession, unknown, PracticeSession>
+  > = {},
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: createPracticeSession,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(practiceSessionQueries.list());
+      options.onSuccess?.(data, variables, context);
+    },
+  });
+}
+
+/**
+ * Mutation to update a practice session.
+ */
+export function usePracticeSessionUpdate(
+  options: Partial<
+    UseMutationOptions<PracticeSession, unknown, PracticeSession>
+  > = {},
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: updatePracticeSession,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(practiceSessionQueries.list());
+      queryClient.setQueryData(
+        practiceSessionQueries.detail(data.id).queryKey,
+        data,
+      );
+      options.onSuccess?.(data, variables, context);
+    },
+  });
+}
 
 /**
  * Mutation to delete a practice session.
