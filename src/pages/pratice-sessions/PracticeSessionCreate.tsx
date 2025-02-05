@@ -20,7 +20,7 @@ export function PraticeSessionCreatePage() {
 
   const createPracticeSession = usePracticeSessionCreate({
     onSuccess: (ps) =>
-      nav({ to: "/practice-sessions/$id", params: { id: ps.id.toString() } }),
+      nav({ to: "/practice-sessions/$id", params: { id: ps.id } }),
   });
 
   return (

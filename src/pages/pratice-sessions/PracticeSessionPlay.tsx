@@ -12,9 +12,7 @@ export function PracticeSessionPlay() {
   const nav = useNavigate();
 
   // TODO: Router should expose params.id as a number
-  const practiceSession = useQuery(
-    practiceSessionQueries.detail(Number(params.id)),
-  );
+  const practiceSession = useQuery(practiceSessionQueries.detail(params.id));
 
   // TODO: Loader
   if (!practiceSession.data) {

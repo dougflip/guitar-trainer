@@ -78,7 +78,7 @@ export function PracticeSessions() {
               <Table.Td>
                 <Link
                   to="/practice-sessions/$id/play"
-                  params={{ id: session.id.toString() }}
+                  params={{ id: session.id }}
                 >
                   {session.title}
                 </Link>
@@ -96,7 +96,7 @@ export function PracticeSessions() {
                     onClick={() => {
                       nav({
                         to: "/practice-sessions/$id",
-                        params: { id: session.id.toString() },
+                        params: { id: session.id },
                       });
                     }}
                     variant="outline"
