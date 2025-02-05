@@ -15,6 +15,7 @@ import { useForm } from "@mantine/form";
 
 type PracticeSessionFormProps = {
   data: PracticeSession;
+  title: ReactNode;
   onSubmit: (data: PracticeSession) => void;
   onPreview: (data: PracticeSession) => void;
   onCancel: () => void;
@@ -41,6 +42,7 @@ function getExerciseListProps(exercise: Exercise): {
 
 export function PracticeSessionForm({
   data,
+  title,
   onSubmit,
   onPreview,
   onCancel,
@@ -72,7 +74,7 @@ export function PracticeSessionForm({
     <div className={className}>
       {screenState.kind === "form" && (
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Title order={2}>Create a Practice Session</Title>
+          <Title order={2}>{title}</Title>
           <p>
             A practice session is a collection of exercises which help you drill
             a specific skill.

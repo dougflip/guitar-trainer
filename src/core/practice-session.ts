@@ -27,7 +27,7 @@ export type ExerciseTimedPitches = {
 export type Exercise = ExerciseTimedPitches;
 
 export type PracticeSession = {
-  id: string;
+  id: number;
   title: string;
   description: string;
   exercises: Exercise[];
@@ -37,7 +37,7 @@ export function makePracticeSession(
   overrides: Partial<PracticeSession> = {},
 ): PracticeSession {
   return {
-    id: "",
+    id: -1,
     title: "",
     description: "",
     exercises: [],

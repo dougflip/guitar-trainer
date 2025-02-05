@@ -5,7 +5,8 @@ import { IconMusic } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 
 export function MainAppShell() {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
+    useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
 
   return (
@@ -37,7 +38,12 @@ export function MainAppShell() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <NavLink component={Link} to="/" label="My Practice Sessions" />
+        <NavLink
+          component={Link}
+          to="/"
+          label="My Practice Sessions"
+          onClick={closeMobile}
+        />
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />

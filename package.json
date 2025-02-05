@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "compile": "tsc -b --noEmit",
     "format": "prettier --write src",
@@ -18,7 +18,9 @@
     "@mantine/core": "^7.15.2",
     "@mantine/form": "^7.16.1",
     "@mantine/hooks": "^7.15.2",
+    "@supabase/supabase-js": "^2.48.1",
     "@tabler/icons-react": "^3.28.1",
+    "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-router": "^1.95.6",
     "clsx": "^2.1.1",
     "mantine-form-zod-resolver": "^1.1.0",
