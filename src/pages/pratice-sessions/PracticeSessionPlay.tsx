@@ -1,7 +1,9 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 
 import { ExercisesPlayer } from "@/components/exercises-player/ExercisesPlayer";
+import { RemoteData } from "@/components/remote-data/RemoteData";
 import { practiceSessionQueries } from "@/queries";
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 /**
@@ -11,18 +13,20 @@ export function PracticeSessionPlay() {
   const params = useParams({ from: "/practice-sessions/$id/play" });
   const nav = useNavigate();
 
-  // TODO: Router should expose params.id as a number
-  const practiceSession = useQuery(practiceSessionQueries.detail(params.id));
+  const remoteSession = useQuery(practiceSessionQueries.detail(params.id));
 
-  // TODO: Loader
-  if (!practiceSession.data) {
-    return null;
-  }
+  const handleOnEnd = useCallback(
+    () => nav({ to: "/practice-sessions" }),
+    [nav],
+  );
 
   return (
-    <ExercisesPlayer
-      exercises={practiceSession.data.exercises}
-      onEnd={() => nav({ to: "/practice-sessions" })}
+    <RemoteData
+      {...remoteSession}
+      loadingMessage="Fetching exercises"
+      render={({ exercises }) => (
+        <ExercisesPlayer exercises={exercises} onEnd={handleOnEnd} />
+      )}
     />
   );
 }

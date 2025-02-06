@@ -2,7 +2,7 @@ import "./TimedPitchesPlayer.css";
 
 import { Flex, Title } from "@mantine/core";
 import { cycle4Notes, noteFrequencies } from "@/core/notes";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import clsx from "clsx";
@@ -14,7 +14,7 @@ type TimedPitchesPlayerProps = {
   onEnd: () => void;
 };
 
-export function TimedPitchesPlayer({ config, onEnd }: TimedPitchesPlayerProps) {
+function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   // default the screen to "empty" state
   // we use the metronome to sync state changes and we want to initialize on the first beat
   const noteIndex = useRef(-1);
@@ -77,3 +77,4 @@ export function TimedPitchesPlayer({ config, onEnd }: TimedPitchesPlayerProps) {
     </Flex>
   );
 }
+export const TimedPitchesPlayer = memo(TimedPitchesPlayerRaw);

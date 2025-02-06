@@ -1,7 +1,12 @@
 import { MainAppShell } from "@/components/layout/MainAppShell";
-import { createRootRoute } from "@tanstack/react-router";
+import { QueryClient } from "@tanstack/react-query";
+import { createRootRouteWithContext } from "@tanstack/react-router";
 
-export const Route = createRootRoute({
+type RootRouteContext = {
+  queryClient: QueryClient;
+};
+
+export const Route = createRootRouteWithContext<RootRouteContext>()({
   component: () => (
     <>
       <MainAppShell />
