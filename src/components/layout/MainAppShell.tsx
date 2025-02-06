@@ -1,13 +1,26 @@
 import { AppShell, Burger, Group, NavLink, Text } from "@mantine/core";
-import { Link, Outlet } from "@tanstack/react-router";
+import {
+  Link,
+  Outlet,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 
 import { IconMusic } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 
 export function MainAppShell() {
+  const ctx = useRouteContext({ from: "__root__" });
+  const nav = useNavigate();
   const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
     useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
+
+  function handleSignOut() {
+    ctx.setAuth({ kind: "unauthenticated" });
+    nav({ to: "/sign-in" });
+    closeMobile();
+  }
 
   return (
     <AppShell
@@ -34,7 +47,7 @@ export function MainAppShell() {
             size="sm"
           />
           <IconMusic size={30} />
-          <Text size="xl">Master Shredder</Text>
+          <Text size="xl">Guitar Trainer</Text>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
@@ -44,6 +57,7 @@ export function MainAppShell() {
           label="My Practice Sessions"
           onClick={closeMobile}
         />
+        <NavLink label="Sign Out" onClick={handleSignOut} />
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />

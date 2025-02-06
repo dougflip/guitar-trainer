@@ -17,7 +17,7 @@ type ScreenState =
  * Page level component which allows a user to edit an existing practice session.
  */
 export function PracticeSessionEditPage() {
-  const params = useParams({ from: "/practice-sessions/$id/" });
+  const params = useParams({ from: "/_authenticated/practice-sessions/$id/" });
   const nav = useNavigate();
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
 

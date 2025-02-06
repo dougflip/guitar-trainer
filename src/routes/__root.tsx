@@ -6,6 +6,7 @@ import { createRootRouteWithContext } from "@tanstack/react-router";
 type RootRouteContext = {
   queryClient: QueryClient;
   auth: AuthState;
+  setAuth: (auth: AuthState) => void;
 };
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({

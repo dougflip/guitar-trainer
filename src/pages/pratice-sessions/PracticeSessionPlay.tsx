@@ -10,7 +10,9 @@ import { useQuery } from "@tanstack/react-query";
  * Page level component which can "play" through an existing practice session.
  */
 export function PracticeSessionPlay() {
-  const params = useParams({ from: "/practice-sessions/$id/play" });
+  const params = useParams({
+    from: "/_authenticated/practice-sessions/$id/play",
+  });
   const nav = useNavigate();
 
   const remoteSession = useQuery(practiceSessionQueries.detail(params.id));

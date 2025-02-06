@@ -1,5 +1,14 @@
 import { PracticeSession } from "@/core/practice-session";
+import { SignInWithPasswordCreds } from "@/core/auth";
 import { supabase } from "@/api/supabase-client";
+
+export async function fetchUser() {
+  return supabase.auth.getUser();
+}
+
+export async function signInWithPassword(creds: SignInWithPasswordCreds) {
+  return await supabase.auth.signInWithPassword(creds);
+}
 
 export async function fetchPracticeSessions(): Promise<PracticeSession[]> {
   const { data } = await supabase

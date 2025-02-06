@@ -2,7 +2,7 @@ import { Container } from "@mantine/core";
 import { PracticeSessions } from "@/pages/pratice-sessions/PracticeSessions";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/practice-sessions/")({
+export const Route = createFileRoute("/_authenticated/practice-sessions/")({
   component: RouteComponent,
 });
 

@@ -1,7 +1,11 @@
-export type AuthUser = {
-  uid: string;
+import { User } from "@supabase/supabase-js";
+
+export type SignInWithPasswordCreds = {
   email: string;
+  password: string;
 };
+
+export type AuthUser = User;
 
 export type AuthState =
   | { kind: "unauthenticated" }
