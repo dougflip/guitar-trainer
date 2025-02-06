@@ -13,7 +13,7 @@ function getRouter(queryClient: QueryClient) {
     routeTree,
     basepath: "/guitar-trainer",
     history: createHashHistory(),
-    context: { queryClient },
+    context: { queryClient, auth: { kind: "unauthenticated" } },
   });
 }
 
