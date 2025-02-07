@@ -6,8 +6,8 @@ import {
 import { SignInWithPasswordCreds } from "@/core/auth";
 import { supabase } from "@/api/supabase-client";
 
-export async function fetchUser() {
-  return supabase.auth.getUser();
+export async function refreshSession() {
+  return supabase.auth.refreshSession();
 }
 
 export async function signInWithPassword(creds: SignInWithPasswordCreds) {

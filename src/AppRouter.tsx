@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 import { AuthState } from "@/core/auth";
 import { BootstrapError } from "@/components/errors/BootstrapError";
-import { fetchUser } from "@/api";
+import { refreshSession } from "@/api";
 import { routeTree } from "@/routeTree.gen";
 
 type BootstrapStatus =
@@ -49,7 +49,7 @@ export const AppRouter = () => {
 
   useEffect(() => {
     async function boot() {
-      const { data, error } = await fetchUser();
+      const { data, error } = await refreshSession();
 
       if (error) {
         console.error("error bootstrapping app", error);
