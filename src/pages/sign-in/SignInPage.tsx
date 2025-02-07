@@ -1,8 +1,7 @@
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 
 import { SignInForm } from "@/components/auth/SignInForm";
-import { SignInWithPasswordCreds } from "@/core/auth";
-import { signInWithPassword } from "@/api";
+import { useSignInWithPassword } from "@/queries";
 import { useState } from "react";
 
 export function SignInPage() {
@@ -10,19 +9,24 @@ export function SignInPage() {
   const nav = useNavigate();
   const [err, setErr] = useState("");
 
-  // TODO: This can probably be a mutation? maybe?
-  // then we can do a proper loading state and clear the error
-  // also, do we want error messages or toasts?
-  async function handleSubmit(creds: SignInWithPasswordCreds) {
-    const { data, error } = await signInWithPassword(creds);
-    if (error || !data.user) {
-      setErr("Invalid email or password");
-      return;
-    }
+  const signIn = useSignInWithPassword({
+    onMutate: () => setErr(""),
+    onSuccess({ data, error }) {
+      if (error || !data.user) {
+        setErr("Invalid email or password");
+        return;
+      }
 
-    setAuth({ kind: "authenticated", user: data.user });
-    nav({ to: "/" });
-  }
+      setAuth({ kind: "authenticated", user: data.user });
+      nav({ to: "/" });
+    },
+  });
 
-  return <SignInForm onSubmit={handleSubmit} errorMessage={err} />;
+  return (
+    <SignInForm
+      onSubmit={signIn.mutate}
+      errorMessage={err}
+      isSubmitting={signIn.isPending}
+    />
+  );
 }

@@ -20,9 +20,14 @@ const schema = z.object({
 type SignInFormProps = {
   onSubmit: (data: z.infer<typeof schema>) => void;
   errorMessage?: ReactNode;
+  isSubmitting?: boolean;
 };
 
-export function SignInForm({ onSubmit, errorMessage }: SignInFormProps) {
+export function SignInForm({
+  onSubmit,
+  errorMessage,
+  isSubmitting,
+}: SignInFormProps) {
   const form = useForm({
     initialValues: { email: "", password: "" },
     validate: zodResolver(schema),
@@ -57,7 +62,7 @@ export function SignInForm({ onSubmit, errorMessage }: SignInFormProps) {
             key={form.key("password")}
             {...form.getInputProps("password")}
           />
-          <Button type="submit" fullWidth mt="xl">
+          <Button type="submit" fullWidth mt="xl" loading={isSubmitting}>
             Sign in
           </Button>
         </form>
