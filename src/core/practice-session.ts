@@ -1,23 +1,66 @@
-import { BPM, ZeroToOneHundred } from "@/core/base";
-
+import { errorMap } from "@/core/utils";
 import { notes } from "@/core/notes";
 import { shuffle } from "remeda";
+import { z } from "zod";
 
 export type NotePool = { kind: "circle-of-fourths" };
+
+export const exerciseTimedPitchesConfigSchema = z.object({
+  title: z.string().nonempty("Title is required"),
+  description: z.string(),
+  tempo: z
+    .number(errorMap("Tempo should be a number between 30 and 200"))
+    .int()
+    .min(30)
+    .max(200),
+  beatsPerNote: z
+    .number(errorMap("Beats per note should be a number between 1 and 100"))
+    .int()
+    .positive(),
+  numberOfCycles: z
+    .number(errorMap("Number of cycles should be a number between 1 and 25"))
+    .int()
+    .positive(),
+  metronomeVolume: z
+    .number(errorMap("Volume should be a number between 1 and 100"))
+    .int()
+    .min(0)
+    .max(100),
+  pitchVolume: z
+    .number(errorMap("Volume should be a number between 1 and 100"))
+    .int()
+    .min(0)
+    .max(100),
+  notes: z.object({
+    kind: z.literal("circle-of-fourths"),
+  }),
+});
+
+export const exerciseTimedPitchesSchema = z.object({
+  type: z.literal("timed-pitches"),
+  config: exerciseTimedPitchesConfigSchema,
+});
+
+export const practiceSessionSchema = z.object({
+  id: z.number().int(),
+  title: z
+    .string()
+    .nonempty("Title is required")
+    .max(100, "Title should be 100 characters or less"),
+  exercises: z
+    .array(exerciseTimedPitchesSchema)
+    .min(1, "At least one exercise is required"),
+  description: z
+    .string()
+    .max(2500, { message: "Description should be 2500 characters or less" }),
+});
 
 /**
  * This single exercise will cover all of the existing exercises.
  */
-export type ExerciseTimedPitchesConfig = {
-  title: string;
-  description: string;
-  tempo: BPM;
-  notes: NotePool;
-  beatsPerNote: number;
-  numberOfCycles: number;
-  metronomeVolume: ZeroToOneHundred;
-  pitchVolume: ZeroToOneHundred;
-};
+export type ExerciseTimedPitchesConfig = z.infer<
+  typeof exerciseTimedPitchesConfigSchema
+>;
 
 export type ExerciseTimedPitches = {
   type: "timed-pitches";
@@ -26,12 +69,7 @@ export type ExerciseTimedPitches = {
 
 export type Exercise = ExerciseTimedPitches;
 
-export type PracticeSession = {
-  id: number;
-  title: string;
-  description: string;
-  exercises: Exercise[];
-};
+export type PracticeSession = z.infer<typeof practiceSessionSchema>;
 
 export function makePracticeSession(
   overrides: Partial<PracticeSession> = {},

@@ -14,6 +14,7 @@ export async function fetchPracticeSessions(): Promise<PracticeSession[]> {
   const { data } = await supabase
     .from("practice-sessions")
     .select("*")
+    .order("title")
     .throwOnError();
 
   return data;

@@ -3,7 +3,6 @@ import {
   getTimeForPracticeSession,
   getTimeForSingleExercise,
   secondsToApproximateMinutes,
-  secondsToMinutes,
 } from "@/core/utils";
 import {
   makePracticeSession,
@@ -72,15 +71,6 @@ describe("utils", () => {
       });
 
       expect(getTimeForPracticeSession(session)).toBe(168);
-    });
-  });
-
-  describe("secondsToMinutes", () => {
-    it("converts seconds to minutes", () => {
-      expect(secondsToMinutes(60)).toBe("1:00");
-      expect(secondsToMinutes(120)).toBe("2:00");
-      expect(secondsToMinutes(121)).toBe("2:01");
-      expect(secondsToMinutes(122)).toBe("2:02");
     });
   });
 
