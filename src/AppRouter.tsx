@@ -52,6 +52,7 @@ export const AppRouter = () => {
       const { data, error } = await fetchUser();
 
       if (error) {
+        console.error("error bootstrapping app", error);
         setBootData({ kind: "error", error });
         return;
       }
