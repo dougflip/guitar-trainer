@@ -34,7 +34,7 @@ export function PracticeSessions() {
     useState<PracticeSessionOwner>("all");
 
   const remoteSessions = useQuery(
-    practiceSessionQueries.list({
+    practiceSessionQueries.listFiltered({
       currentUserId: auth.kind === "authenticated" ? auth.user.id : "",
       owner: sessionFilter,
     }),
