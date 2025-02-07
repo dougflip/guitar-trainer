@@ -5,6 +5,13 @@ import { z } from "zod";
 
 export type NotePool = { kind: "circle-of-fourths" };
 
+export type PracticeSessionOwner = "all" | "mine";
+
+export type PracticeSessionFilters = {
+  currentUserId: string;
+  owner: PracticeSessionOwner;
+};
+
 export const exerciseTimedPitchesConfigSchema = z.object({
   title: z.string().nonempty("Title is required"),
   description: z.string(),

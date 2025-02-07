@@ -1,4 +1,8 @@
 import {
+  PracticeSession,
+  PracticeSessionFilters,
+} from "@/core/practice-session";
+import {
   UseMutationOptions,
   queryOptions,
   useMutation,
@@ -12,14 +16,12 @@ import {
   updatePracticeSession,
 } from "@/api";
 
-import { PracticeSession } from "@/core/practice-session";
-
 export const practiceSessionQueries = {
   all: () => ["practice-sessions"] as const,
-  list: () =>
+  list: (filters: PracticeSessionFilters) =>
     queryOptions({
-      queryKey: [...practiceSessionQueries.all(), "list"],
-      queryFn: fetchPracticeSessions,
+      queryKey: [...practiceSessionQueries.all(), "list", filters],
+      queryFn: () => fetchPracticeSessions(filters),
     }),
   detail: (id: number) =>
     queryOptions({

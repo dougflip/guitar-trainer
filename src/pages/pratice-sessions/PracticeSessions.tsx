@@ -4,17 +4,19 @@ import {
   Center,
   Flex,
   Modal,
+  SegmentedControl,
   Table,
   Text,
 } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
   getTimeForPracticeSession,
   secondsToApproximateMinutes,
 } from "@/core/utils";
 import { practiceSessionQueries, usePracticeSessionDelete } from "@/queries";
 
+import { PracticeSessionOwner } from "@/core/practice-session";
 import { RemoteData } from "@/components/remote-data/RemoteData";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
@@ -25,10 +27,18 @@ import { useState } from "react";
  */
 export function PracticeSessions() {
   const nav = useNavigate();
+  const { auth } = useRouteContext({ from: "__root__" });
   const [opened, { open, close }] = useDisclosure(false);
   const [deleteId, setDeleteId] = useState<number>(-1);
+  const [sessionFilter, setSessionFilter] =
+    useState<PracticeSessionOwner>("all");
 
-  const remoteSessions = useQuery(practiceSessionQueries.list());
+  const remoteSessions = useQuery(
+    practiceSessionQueries.list({
+      currentUserId: auth.kind === "authenticated" ? auth.user.id : "",
+      owner: sessionFilter,
+    }),
+  );
   const deletePracticeSession = usePracticeSessionDelete();
 
   function handleDeletePracticeSession() {
@@ -57,7 +67,16 @@ export function PracticeSessions() {
               </Button>
             </Flex>
           </Modal>
-          <Flex justify="end">
+          <Flex justify="space-between" mb="md">
+            <SegmentedControl
+              value={sessionFilter}
+              data={[
+                { label: "All", value: "all" },
+                { label: "Mine Only", value: "mine" },
+              ]}
+              onChange={(x) => setSessionFilter(x as PracticeSessionOwner)}
+              color="blue"
+            />
             <Button component={Link} to="/practice-sessions/create">
               + Add
             </Button>
