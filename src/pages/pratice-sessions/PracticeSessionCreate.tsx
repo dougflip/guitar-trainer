@@ -33,6 +33,7 @@ export function PraticeSessionCreatePage() {
         onCancel={() => {
           nav({ to: "/practice-sessions" });
         }}
+        submitting={createPracticeSession.isPending}
         className={clsx({ "d-none": screenState.kind === "playing" })}
       />
 

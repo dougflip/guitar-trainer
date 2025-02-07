@@ -42,6 +42,7 @@ export function PracticeSessionEditPage() {
             onCancel={() => {
               nav({ to: "/practice-sessions" });
             }}
+            submitting={updatePracticeSession.isPending}
             className={clsx({ "d-none": screenState.kind === "playing" })}
           />
 

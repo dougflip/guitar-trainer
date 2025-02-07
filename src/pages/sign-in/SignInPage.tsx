@@ -26,7 +26,7 @@ export function SignInPage() {
     <SignInForm
       onSubmit={signIn.mutate}
       errorMessage={err}
-      isSubmitting={signIn.isPending}
+      submitting={signIn.isPending}
     />
   );
 }

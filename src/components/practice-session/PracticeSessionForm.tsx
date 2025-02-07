@@ -19,6 +19,8 @@ type PracticeSessionFormProps = {
   onSubmit: (data: PracticeSession) => void;
   onPreview: (data: PracticeSession) => void;
   onCancel: () => void;
+  submitting?: boolean;
+  previewDisabled?: boolean;
   className?: string;
 };
 
@@ -46,6 +48,8 @@ export function PracticeSessionForm({
   onSubmit,
   onPreview,
   onCancel,
+  submitting,
+  previewDisabled = submitting,
   className,
 }: PracticeSessionFormProps) {
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
@@ -124,11 +128,11 @@ export function PracticeSessionForm({
             key={form.key("description")}
             {...form.getInputProps("description")}
           />
-          <FormButtons onCancel={onCancel}>
+          <FormButtons onCancel={onCancel} submitting={submitting}>
             <Button
               type="button"
               onClick={handlePlay}
-              disabled={exercises.length === 0}
+              disabled={previewDisabled || exercises.length === 0}
             >
               Preview
             </Button>
