@@ -1,17 +1,28 @@
-import { Button, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
-import { Exercise, ExerciseTimedPitches } from "@/core/practice-session";
+import {
+  Button,
+  InputWrapper,
+  Stack,
+  TextInput,
+  Textarea,
+  Title,
+} from "@mantine/core";
+import {
+  Exercise,
+  ExerciseTimedPitches,
+  practiceSessionSchema,
+} from "@/core/practice-session";
 import { ReactNode, useState } from "react";
 import {
   getTimeForSingleExercise,
   secondsToApproximateMinutes,
 } from "@/core/utils";
+import { useForm, zodResolver } from "@mantine/form";
 
 import { DataListItem } from "@/components/data-list-item/DataListItem";
 import { FormButtons } from "@/components/form/FormButtons";
 import { PracticeSession } from "@/core/practice-session";
 import { TimedPitchesForm } from "@/components/timed-pitches/TimedPitchesForm";
 import { makeTimedPitchesExercise } from "@/core/practice-session";
-import { useForm } from "@mantine/form";
 
 type PracticeSessionFormProps = {
   data: PracticeSession;
@@ -19,6 +30,8 @@ type PracticeSessionFormProps = {
   onSubmit: (data: PracticeSession) => void;
   onPreview: (data: PracticeSession) => void;
   onCancel: () => void;
+  submitting?: boolean;
+  previewDisabled?: boolean;
   className?: string;
 };
 
@@ -46,10 +59,15 @@ export function PracticeSessionForm({
   onSubmit,
   onPreview,
   onCancel,
+  submitting,
+  previewDisabled = submitting,
   className,
 }: PracticeSessionFormProps) {
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
-  const form = useForm({ initialValues: data });
+  const form = useForm({
+    initialValues: data,
+    validate: zodResolver(practiceSessionSchema),
+  });
 
   function handleExerciseSubmit(exercise: Exercise, editIndex: number | null) {
     if (editIndex !== null) {
@@ -57,6 +75,7 @@ export function PracticeSessionForm({
     } else {
       form.insertListItem("exercises", exercise);
     }
+    form.validateField("exercises");
     setScreenState({ kind: "form" });
   }
 
@@ -88,7 +107,11 @@ export function PracticeSessionForm({
             {...form.getInputProps("title")}
           />
           <Stack mb="lg" gap="xs">
-            <Text size="sm">Exercises</Text>
+            <InputWrapper
+              label="Exercises"
+              required
+              {...form.getInputProps("exercises")}
+            />
             {exercises.map((exercise, index) => (
               <DataListItem
                 key={index}
@@ -124,11 +147,11 @@ export function PracticeSessionForm({
             key={form.key("description")}
             {...form.getInputProps("description")}
           />
-          <FormButtons onCancel={onCancel}>
+          <FormButtons onCancel={onCancel} submitting={submitting}>
             <Button
               type="button"
               onClick={handlePlay}
-              disabled={exercises.length === 0}
+              disabled={previewDisabled || exercises.length === 0}
             >
               Preview
             </Button>

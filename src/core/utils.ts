@@ -3,6 +3,9 @@ import { Minutes, Seconds } from "@/core/base";
 
 import { cycle4Notes } from "@/core/notes";
 
+/**
+ * Returns the number of notes in a note pool.
+ */
 export function getNoteCount(notes: NotePool): number {
   switch (notes.kind) {
     case "circle-of-fourths":
@@ -10,12 +13,9 @@ export function getNoteCount(notes: NotePool): number {
   }
 }
 
-export function secondsToMinutes(seconds: Seconds): string {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-}
-
+/**
+ * Formats minutes and seconds into a human-readable string.
+ */
 function formatMinutesAndSeconds(
   minutes: Minutes,
   seconds: Seconds = 0,
@@ -27,6 +27,10 @@ function formatMinutesAndSeconds(
       : `${seconds}s`;
 }
 
+/**
+ * Returns a human-readable string for the approximate time in minutes.
+ * "Approximate" means to the nearest quarter minute.
+ */
 export function secondsToApproximateMinutes(seconds: Seconds): string {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -48,11 +52,18 @@ export function secondsToApproximateMinutes(seconds: Seconds): string {
   return formatMinutesAndSeconds(minutes);
 }
 
+/**
+ * Returns the approximate time in seconds for a single exercise.
+ */
 export function getTimeForSingleExercise({ config }: Exercise): Seconds {
   const oneNoteLength = (60 / config.tempo) * config.beatsPerNote;
   return oneNoteLength * getNoteCount(config.notes) * config.numberOfCycles;
 }
 
+/**
+ * Returns the approximate time in seconds for a practice session.
+ * This is the sum of the time for each exercise.
+ */
 export function getTimeForPracticeSession({
   exercises,
 }: PracticeSession): Seconds {
@@ -60,4 +71,15 @@ export function getTimeForPracticeSession({
     (totalTime, exercise) => totalTime + getTimeForSingleExercise(exercise),
     0,
   );
+}
+
+/**
+ *
+ * Helper to generate a basic error map for Zod.
+ * Saves some typing for the most common case.
+ */
+export function errorMap(message: string) {
+  return {
+    errorMap: () => ({ message }),
+  };
 }

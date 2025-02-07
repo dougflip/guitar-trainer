@@ -1,9 +1,9 @@
 import { Container } from "@mantine/core";
-import { PracticeSessionPlay } from "@/pages/pratice-sessions/PracticeSessionPlay";
+import { PracticeSessionEditPage } from "@/pages/pratice-sessions/PracticeSessionEdit";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-export const Route = createFileRoute("/practice-sessions/$id/play")({
+export const Route = createFileRoute("/_authenticated/practice-sessions/$id/")({
   params: {
     parse: z.object({
       id: z.string().transform((val) => parseInt(val)),
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/practice-sessions/$id/play")({
 function RouteComponent() {
   return (
     <Container maw={1000} mx="auto">
-      <PracticeSessionPlay />
+      <PracticeSessionEditPage />
     </Container>
   );
 }

@@ -1,43 +1,18 @@
-import { Exercise, ExerciseTimedPitchesConfig } from "@/core/practice-session";
+import {
+  Exercise,
+  ExerciseTimedPitchesConfig,
+  exerciseTimedPitchesConfigSchema,
+} from "@/core/practice-session";
 import { TextInput, Textarea, Title } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 
 import { FormButtons } from "@/components/form/FormButtons";
-import { z } from "zod";
 
 type TimedPitchesFormProps = {
   data: Extract<Exercise, { type: "timed-pitches" }>;
   onSubmit: (data: Exercise) => void;
   onCancel: () => void;
 };
-
-const schema = z.object({
-  title: z
-    .string()
-    .nonempty({ message: "Title is required" })
-    .max(50, { message: "Title should have at most 50 letters" }),
-  tempo: z
-    .union([z.string(), z.number()])
-    .transform((val) => (typeof val === "string" ? parseInt(val, 10) : val))
-    .refine((val) => !isNaN(val) && val >= 30, {
-      message: "Tempo must be 30 BPM or higher",
-    }),
-  numberOfCycles: z
-    .union([z.string(), z.number()])
-    .transform((val) => (typeof val === "string" ? parseInt(val, 10) : val))
-    .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
-      message: "Number of cycles must be between 1 and 100",
-    }),
-  beatsPerNote: z
-    .union([z.string(), z.number()])
-    .transform((val) => (typeof val === "string" ? parseInt(val, 10) : val))
-    .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
-      message: "Beats per note must be between 1 and 100",
-    }),
-  description: z
-    .string()
-    .max(2000, { message: "Description should have at most 2000 letters" }),
-});
 
 export function TimedPitchesForm({
   data,
@@ -46,7 +21,7 @@ export function TimedPitchesForm({
 }: TimedPitchesFormProps) {
   const form = useForm({
     initialValues: { ...data.config },
-    validate: zodResolver(schema),
+    validate: zodResolver(exerciseTimedPitchesConfigSchema),
   });
 
   const handleSubmit = (formData: ExerciseTimedPitchesConfig) => {

@@ -1,4 +1,8 @@
 import {
+  PracticeSession,
+  PracticeSessionFilters,
+} from "@/core/practice-session";
+import {
   UseMutationOptions,
   queryOptions,
   useMutation,
@@ -12,14 +16,13 @@ import {
   updatePracticeSession,
 } from "@/api";
 
-import { PracticeSession } from "@/core/practice-session";
-
 export const practiceSessionQueries = {
   all: () => ["practice-sessions"] as const,
-  list: () =>
+  list: () => [...practiceSessionQueries.all(), "list"] as const,
+  listFiltered: (filters: PracticeSessionFilters) =>
     queryOptions({
-      queryKey: [...practiceSessionQueries.all(), "list"],
-      queryFn: fetchPracticeSessions,
+      queryKey: [...practiceSessionQueries.list(), filters],
+      queryFn: () => fetchPracticeSessions(filters),
     }),
   detail: (id: number) =>
     queryOptions({
@@ -41,7 +44,9 @@ export function usePracticeSessionCreate(
     ...options,
     mutationFn: createPracticeSession,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(practiceSessionQueries.list());
+      queryClient.invalidateQueries({
+        queryKey: practiceSessionQueries.list(),
+      });
       options.onSuccess?.(data, variables, context);
     },
   });
@@ -60,7 +65,9 @@ export function usePracticeSessionUpdate(
     ...options,
     mutationFn: updatePracticeSession,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(practiceSessionQueries.list());
+      queryClient.invalidateQueries({
+        queryKey: practiceSessionQueries.list(),
+      });
       queryClient.setQueryData(
         practiceSessionQueries.detail(data.id).queryKey,
         data,
@@ -82,7 +89,9 @@ export function usePracticeSessionDelete(
     mutationFn: deletePracticeSession,
     onSuccess: (data, variables, context) => {
       queryClient.removeQueries(practiceSessionQueries.detail(variables));
-      queryClient.invalidateQueries(practiceSessionQueries.list());
+      queryClient.invalidateQueries({
+        queryKey: practiceSessionQueries.list(),
+      });
       options.onSuccess?.(data, variables, context);
     },
   });

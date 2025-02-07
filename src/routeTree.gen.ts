@@ -11,13 +11,26 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SignInImport } from './routes/sign-in'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as IndexImport } from './routes/index'
-import { Route as PracticeSessionsIndexImport } from './routes/practice-sessions/index'
-import { Route as PracticeSessionsCreateImport } from './routes/practice-sessions/create'
-import { Route as PracticeSessionsIdIndexImport } from './routes/practice-sessions/$id/index'
-import { Route as PracticeSessionsIdPlayImport } from './routes/practice-sessions/$id/play'
+import { Route as AuthenticatedPracticeSessionsIndexImport } from './routes/_authenticated/practice-sessions/index'
+import { Route as AuthenticatedPracticeSessionsCreateImport } from './routes/_authenticated/practice-sessions/create'
+import { Route as AuthenticatedPracticeSessionsIdIndexImport } from './routes/_authenticated/practice-sessions/$id/index'
+import { Route as AuthenticatedPracticeSessionsIdPlayImport } from './routes/_authenticated/practice-sessions/$id/play'
 
 // Create/Update Routes
+
+const SignInRoute = SignInImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -25,29 +38,33 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PracticeSessionsIndexRoute = PracticeSessionsIndexImport.update({
-  id: '/practice-sessions/',
-  path: '/practice-sessions/',
-  getParentRoute: () => rootRoute,
-} as any)
+const AuthenticatedPracticeSessionsIndexRoute =
+  AuthenticatedPracticeSessionsIndexImport.update({
+    id: '/practice-sessions/',
+    path: '/practice-sessions/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
-const PracticeSessionsCreateRoute = PracticeSessionsCreateImport.update({
-  id: '/practice-sessions/create',
-  path: '/practice-sessions/create',
-  getParentRoute: () => rootRoute,
-} as any)
+const AuthenticatedPracticeSessionsCreateRoute =
+  AuthenticatedPracticeSessionsCreateImport.update({
+    id: '/practice-sessions/create',
+    path: '/practice-sessions/create',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
-const PracticeSessionsIdIndexRoute = PracticeSessionsIdIndexImport.update({
-  id: '/practice-sessions/$id/',
-  path: '/practice-sessions/$id/',
-  getParentRoute: () => rootRoute,
-} as any)
+const AuthenticatedPracticeSessionsIdIndexRoute =
+  AuthenticatedPracticeSessionsIdIndexImport.update({
+    id: '/practice-sessions/$id/',
+    path: '/practice-sessions/$id/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
-const PracticeSessionsIdPlayRoute = PracticeSessionsIdPlayImport.update({
-  id: '/practice-sessions/$id/play',
-  path: '/practice-sessions/$id/play',
-  getParentRoute: () => rootRoute,
-} as any)
+const AuthenticatedPracticeSessionsIdPlayRoute =
+  AuthenticatedPracticeSessionsIdPlayImport.update({
+    id: '/practice-sessions/$id/play',
+    path: '/practice-sessions/$id/play',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -60,68 +77,112 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/practice-sessions/create': {
-      id: '/practice-sessions/create'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInImport
+      parentRoute: typeof rootRoute
+    }
+    '/_authenticated/practice-sessions/create': {
+      id: '/_authenticated/practice-sessions/create'
       path: '/practice-sessions/create'
       fullPath: '/practice-sessions/create'
-      preLoaderRoute: typeof PracticeSessionsCreateImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedPracticeSessionsCreateImport
+      parentRoute: typeof AuthenticatedImport
     }
-    '/practice-sessions/': {
-      id: '/practice-sessions/'
+    '/_authenticated/practice-sessions/': {
+      id: '/_authenticated/practice-sessions/'
       path: '/practice-sessions'
       fullPath: '/practice-sessions'
-      preLoaderRoute: typeof PracticeSessionsIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedPracticeSessionsIndexImport
+      parentRoute: typeof AuthenticatedImport
     }
-    '/practice-sessions/$id/play': {
-      id: '/practice-sessions/$id/play'
+    '/_authenticated/practice-sessions/$id/play': {
+      id: '/_authenticated/practice-sessions/$id/play'
       path: '/practice-sessions/$id/play'
       fullPath: '/practice-sessions/$id/play'
-      preLoaderRoute: typeof PracticeSessionsIdPlayImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedPracticeSessionsIdPlayImport
+      parentRoute: typeof AuthenticatedImport
     }
-    '/practice-sessions/$id/': {
-      id: '/practice-sessions/$id/'
+    '/_authenticated/practice-sessions/$id/': {
+      id: '/_authenticated/practice-sessions/$id/'
       path: '/practice-sessions/$id'
       fullPath: '/practice-sessions/$id'
-      preLoaderRoute: typeof PracticeSessionsIdIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedPracticeSessionsIdIndexImport
+      parentRoute: typeof AuthenticatedImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedPracticeSessionsCreateRoute: typeof AuthenticatedPracticeSessionsCreateRoute
+  AuthenticatedPracticeSessionsIndexRoute: typeof AuthenticatedPracticeSessionsIndexRoute
+  AuthenticatedPracticeSessionsIdPlayRoute: typeof AuthenticatedPracticeSessionsIdPlayRoute
+  AuthenticatedPracticeSessionsIdIndexRoute: typeof AuthenticatedPracticeSessionsIdIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedPracticeSessionsCreateRoute:
+    AuthenticatedPracticeSessionsCreateRoute,
+  AuthenticatedPracticeSessionsIndexRoute:
+    AuthenticatedPracticeSessionsIndexRoute,
+  AuthenticatedPracticeSessionsIdPlayRoute:
+    AuthenticatedPracticeSessionsIdPlayRoute,
+  AuthenticatedPracticeSessionsIdIndexRoute:
+    AuthenticatedPracticeSessionsIdIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/practice-sessions/create': typeof PracticeSessionsCreateRoute
-  '/practice-sessions': typeof PracticeSessionsIndexRoute
-  '/practice-sessions/$id/play': typeof PracticeSessionsIdPlayRoute
-  '/practice-sessions/$id': typeof PracticeSessionsIdIndexRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/practice-sessions/create': typeof AuthenticatedPracticeSessionsCreateRoute
+  '/practice-sessions': typeof AuthenticatedPracticeSessionsIndexRoute
+  '/practice-sessions/$id/play': typeof AuthenticatedPracticeSessionsIdPlayRoute
+  '/practice-sessions/$id': typeof AuthenticatedPracticeSessionsIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/practice-sessions/create': typeof PracticeSessionsCreateRoute
-  '/practice-sessions': typeof PracticeSessionsIndexRoute
-  '/practice-sessions/$id/play': typeof PracticeSessionsIdPlayRoute
-  '/practice-sessions/$id': typeof PracticeSessionsIdIndexRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/practice-sessions/create': typeof AuthenticatedPracticeSessionsCreateRoute
+  '/practice-sessions': typeof AuthenticatedPracticeSessionsIndexRoute
+  '/practice-sessions/$id/play': typeof AuthenticatedPracticeSessionsIdPlayRoute
+  '/practice-sessions/$id': typeof AuthenticatedPracticeSessionsIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/practice-sessions/create': typeof PracticeSessionsCreateRoute
-  '/practice-sessions/': typeof PracticeSessionsIndexRoute
-  '/practice-sessions/$id/play': typeof PracticeSessionsIdPlayRoute
-  '/practice-sessions/$id/': typeof PracticeSessionsIdIndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/_authenticated/practice-sessions/create': typeof AuthenticatedPracticeSessionsCreateRoute
+  '/_authenticated/practice-sessions/': typeof AuthenticatedPracticeSessionsIndexRoute
+  '/_authenticated/practice-sessions/$id/play': typeof AuthenticatedPracticeSessionsIdPlayRoute
+  '/_authenticated/practice-sessions/$id/': typeof AuthenticatedPracticeSessionsIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | ''
+    | '/sign-in'
     | '/practice-sessions/create'
     | '/practice-sessions'
     | '/practice-sessions/$id/play'
@@ -129,6 +190,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | ''
+    | '/sign-in'
     | '/practice-sessions/create'
     | '/practice-sessions'
     | '/practice-sessions/$id/play'
@@ -136,27 +199,25 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/practice-sessions/create'
-    | '/practice-sessions/'
-    | '/practice-sessions/$id/play'
-    | '/practice-sessions/$id/'
+    | '/_authenticated'
+    | '/sign-in'
+    | '/_authenticated/practice-sessions/create'
+    | '/_authenticated/practice-sessions/'
+    | '/_authenticated/practice-sessions/$id/play'
+    | '/_authenticated/practice-sessions/$id/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  PracticeSessionsCreateRoute: typeof PracticeSessionsCreateRoute
-  PracticeSessionsIndexRoute: typeof PracticeSessionsIndexRoute
-  PracticeSessionsIdPlayRoute: typeof PracticeSessionsIdPlayRoute
-  PracticeSessionsIdIndexRoute: typeof PracticeSessionsIdIndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  SignInRoute: typeof SignInRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  PracticeSessionsCreateRoute: PracticeSessionsCreateRoute,
-  PracticeSessionsIndexRoute: PracticeSessionsIndexRoute,
-  PracticeSessionsIdPlayRoute: PracticeSessionsIdPlayRoute,
-  PracticeSessionsIdIndexRoute: PracticeSessionsIdIndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  SignInRoute: SignInRoute,
 }
 
 export const routeTree = rootRoute
@@ -170,26 +231,40 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/practice-sessions/create",
-        "/practice-sessions/",
-        "/practice-sessions/$id/play",
-        "/practice-sessions/$id/"
+        "/_authenticated",
+        "/sign-in"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/practice-sessions/create": {
-      "filePath": "practice-sessions/create.tsx"
+    "/_authenticated": {
+      "filePath": "_authenticated.tsx",
+      "children": [
+        "/_authenticated/practice-sessions/create",
+        "/_authenticated/practice-sessions/",
+        "/_authenticated/practice-sessions/$id/play",
+        "/_authenticated/practice-sessions/$id/"
+      ]
     },
-    "/practice-sessions/": {
-      "filePath": "practice-sessions/index.tsx"
+    "/sign-in": {
+      "filePath": "sign-in.tsx"
     },
-    "/practice-sessions/$id/play": {
-      "filePath": "practice-sessions/$id/play.tsx"
+    "/_authenticated/practice-sessions/create": {
+      "filePath": "_authenticated/practice-sessions/create.tsx",
+      "parent": "/_authenticated"
     },
-    "/practice-sessions/$id/": {
-      "filePath": "practice-sessions/$id/index.tsx"
+    "/_authenticated/practice-sessions/": {
+      "filePath": "_authenticated/practice-sessions/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/practice-sessions/$id/play": {
+      "filePath": "_authenticated/practice-sessions/$id/play.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/practice-sessions/$id/": {
+      "filePath": "_authenticated/practice-sessions/$id/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }

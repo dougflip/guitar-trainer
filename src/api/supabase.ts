@@ -1,11 +1,33 @@
-import { PracticeSession } from "@/core/practice-session";
+import {
+  PracticeSession,
+  PracticeSessionFilters,
+} from "@/core/practice-session";
+
+import { SignInWithPasswordCreds } from "@/core/auth";
 import { supabase } from "@/api/supabase-client";
 
-export async function fetchPracticeSessions(): Promise<PracticeSession[]> {
-  const { data } = await supabase
+export async function fetchUser() {
+  return supabase.auth.getUser();
+}
+
+export async function signInWithPassword(creds: SignInWithPasswordCreds) {
+  return await supabase.auth.signInWithPassword(creds);
+}
+
+export async function fetchPracticeSessions(
+  filters: PracticeSessionFilters,
+): Promise<PracticeSession[]> {
+  let query = supabase
     .from("practice-sessions")
     .select("*")
+    .order("title")
     .throwOnError();
+
+  if (filters.owner === "mine") {
+    query = query.eq("created_user", filters.currentUserId);
+  }
+
+  const { data } = await query;
 
   return data;
 }
