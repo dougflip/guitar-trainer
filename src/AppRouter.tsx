@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 
 import { AuthState } from "@/core/auth";
 import { BootstrapError } from "@/components/errors/BootstrapError";
-import { refreshSession } from "@/api";
 import { routeTree } from "@/routeTree.gen";
+import { supabase } from "@/api/supabase-client";
 
 type BootstrapStatus =
   | { kind: "loading" }
@@ -48,31 +48,24 @@ export const AppRouter = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    async function boot() {
-      const { data, error } = await refreshSession();
-
-      if (error) {
-        console.error("error bootstrapping app", error);
-        setBootData({ kind: "error", error });
-        return;
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "INITIAL_SESSION") {
+        if (session) {
+          setBootData({
+            kind: "loaded",
+            auth: { kind: "authenticated", user: session.user },
+          });
+        } else {
+          setBootData({ kind: "loaded", auth: { kind: "unauthenticated" } });
+        }
       }
+    });
 
-      if (data.user) {
-        setBootData({
-          kind: "loaded",
-          auth: { kind: "authenticated", user: data.user },
-        });
-        return;
-      }
-
-      setBootData({ kind: "loaded", auth: { kind: "unauthenticated" } });
-    }
-
-    boot();
+    return data.subscription.unsubscribe;
   }, []);
 
   if (bootData.kind === "loading") {
-    return null;
+    return <div>loading...</div>;
   }
 
   if (bootData.kind === "error") {
