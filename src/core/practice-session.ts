@@ -1,9 +1,6 @@
-import { errorMap } from "@/core/utils";
 import { notes } from "@/core/notes";
 import { shuffle } from "remeda";
 import { z } from "zod";
-
-export type NotePool = { kind: "circle-of-fourths" };
 
 export type PracticeSessionOwner = "all" | "mine";
 
@@ -12,35 +9,45 @@ export type PracticeSessionFilters = {
   owner: PracticeSessionOwner;
 };
 
+export const notePoolSchema = z.union([
+  z.object({ kind: z.literal("circle-of-fourths") }),
+  z.object({ kind: z.literal("circle-of-fifths") }),
+]);
+
 export const exerciseTimedPitchesConfigSchema = z.object({
   title: z.string().nonempty("Title is required"),
   description: z.string(),
   tempo: z
-    .number(errorMap("Tempo should be a number between 30 and 200"))
-    .int()
-    .min(30)
-    .max(200),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 30 && val <= 200, {
+      message: "Tempo should be a number between 30 and 200",
+    }),
   beatsPerNote: z
-    .number(errorMap("Beats per note should be a number between 1 and 100"))
-    .int()
-    .positive(),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
+      message: "Beats per note should be a number between 1 and 100",
+    }),
   numberOfCycles: z
-    .number(errorMap("Number of cycles should be a number between 1 and 25"))
-    .int()
-    .positive(),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 1 && val <= 25, {
+      message: "Number of cycles should be a number between 1 and 25",
+    }),
   metronomeVolume: z
-    .number(errorMap("Volume should be a number between 1 and 100"))
-    .int()
-    .min(0)
-    .max(100),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0 && val <= 100, {
+      message: "Metronome volume should be a number between 0 and 100",
+    }),
   pitchVolume: z
-    .number(errorMap("Volume should be a number between 1 and 100"))
-    .int()
-    .min(0)
-    .max(100),
-  notes: z.object({
-    kind: z.literal("circle-of-fourths"),
-  }),
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0 && val <= 100, {
+      message: "Pitch volume should be a number between 0 and 100",
+    }),
+  notes: notePoolSchema,
 });
 
 export const exerciseTimedPitchesSchema = z.object({
@@ -61,6 +68,8 @@ export const practiceSessionSchema = z.object({
     .string()
     .max(2500, { message: "Description should be 2500 characters or less" }),
 });
+
+export type NotePool = z.infer<typeof notePoolSchema>;
 
 /**
  * This single exercise will cover all of the existing exercises.

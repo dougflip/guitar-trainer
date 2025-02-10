@@ -1,7 +1,6 @@
 import { Exercise, NotePool, PracticeSession } from "@/core/practice-session";
 import { Minutes, Seconds } from "@/core/base";
-
-import { cycle4Notes } from "@/core/notes";
+import { cycle4Notes, cycle5Notes } from "@/core/notes";
 
 /**
  * Returns the number of notes in a note pool.
@@ -10,6 +9,20 @@ export function getNoteCount(notes: NotePool): number {
   switch (notes.kind) {
     case "circle-of-fourths":
       return cycle4Notes.length;
+    case "circle-of-fifths":
+      return cycle5Notes.length;
+  }
+}
+
+/**
+ * Gets a pool of notes based on type
+ */
+export function getNotePool(notes: NotePool): Readonly<string[]> {
+  switch (notes.kind) {
+    case "circle-of-fourths":
+      return cycle4Notes;
+    case "circle-of-fifths":
+      return cycle5Notes;
   }
 }
 

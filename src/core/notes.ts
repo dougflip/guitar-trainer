@@ -62,6 +62,24 @@ export const cycle4Notes: Readonly<string[]> = [
 ];
 
 /**
+ * The circle of fifths in a list starting at C natural.
+ */
+export const cycle5Notes: Readonly<string[]> = [
+  "C",
+  "G",
+  "D",
+  "A",
+  "E",
+  "B",
+  "F#",
+  "C#",
+  "G#",
+  "D#",
+  "A#",
+  "F",
+];
+
+/**
  * Returns a random note from the chromatic scale.
  *
  * We'll eventually want options to exclude certain notes, or to limit the range.

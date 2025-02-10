@@ -3,7 +3,13 @@ import {
   ExerciseTimedPitchesConfig,
   exerciseTimedPitchesConfigSchema,
 } from "@/core/practice-session";
-import { TextInput, Textarea, Title } from "@mantine/core";
+import {
+  Input,
+  SegmentedControl,
+  TextInput,
+  Textarea,
+  Title,
+} from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 
 import { FormButtons } from "@/components/form/FormButtons";
@@ -47,6 +53,23 @@ export function TimedPitchesForm({
           key={form.key("title")}
           {...form.getInputProps("title")}
         />
+        <Input.Wrapper
+          label="Notes"
+          description="The notes that will be displayed during the exercise"
+          mb="lg"
+          withAsterisk
+        >
+          <SegmentedControl
+            mt="sm"
+            color="blue"
+            data={[
+              { value: "circle-of-fourths", label: "Circle of 4ths" },
+              { value: "circle-of-fifths", label: "Circle of 5ths" },
+            ]}
+            key={form.key("notes.kind")}
+            {...form.getInputProps("notes.kind")}
+          />
+        </Input.Wrapper>
         <TextInput
           withAsterisk
           label="Tempo (BPM)"
