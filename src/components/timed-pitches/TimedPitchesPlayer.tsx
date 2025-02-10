@@ -1,13 +1,14 @@
 import "./TimedPitchesPlayer.css";
 
 import { Flex, Title } from "@mantine/core";
-import { cycle4Notes, noteFrequencies } from "@/core/notes";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import clsx from "clsx";
 import { createMetronome } from "@/core/sound/metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
+import { getNotePool } from "@/core/utils";
+import { noteFrequencies } from "@/core/notes";
 
 type TimedPitchesPlayerProps = {
   config: ExerciseTimedPitchesConfig;
@@ -20,6 +21,7 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   const noteIndex = useRef(-1);
   const cycleCount = useRef(0);
   const beatCount = useRef(-1);
+  const notePool = useRef(getNotePool(config.notes));
   const [note, setNote] = useState("");
 
   useEffect(() => {
@@ -34,7 +36,8 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
         }
 
         noteIndex.current =
-          noteIndex.current < 0 || noteIndex.current >= cycle4Notes.length - 1
+          noteIndex.current < 0 ||
+          noteIndex.current >= notePool.current.length - 1
             ? 0
             : noteIndex.current + 1;
 
@@ -48,7 +51,7 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
           }
         }
 
-        const currentNote = cycle4Notes[noteIndex.current];
+        const currentNote = notePool.current[noteIndex.current];
         setNote(currentNote);
         pitchGenerator.play({
           frequency: noteFrequencies[currentNote],
