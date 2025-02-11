@@ -1,6 +1,7 @@
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 
 import { SignInForm } from "@/components/auth/SignInForm";
+import { supabase } from "@/api/supabase-client";
 import { useSignInWithPassword } from "@/queries";
 import { useState } from "react";
 
@@ -22,9 +23,17 @@ export function SignInPage() {
     },
   });
 
+  const handleGoogleSignIn = () => {
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: "http://localhost:5173/guitar-trainer/" },
+    });
+  };
+
   return (
     <SignInForm
       onSubmit={signIn.mutate}
+      onGoogleSignIn={handleGoogleSignIn}
       errorMessage={err}
       submitting={signIn.isPending}
     />
