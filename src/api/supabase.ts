@@ -10,6 +10,10 @@ export async function signInWithPassword(creds: SignInWithPasswordCreds) {
   return await supabase.auth.signInWithPassword(creds);
 }
 
+export async function signOut() {
+  return await supabase.auth.signOut();
+}
+
 export async function fetchPracticeSessions(
   filters: PracticeSessionFilters,
 ): Promise<PracticeSession[]> {
