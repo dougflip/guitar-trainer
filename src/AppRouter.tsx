@@ -59,6 +59,9 @@ export const AppRouter = () => {
           setBootData({ kind: "loaded", auth: { kind: "unauthenticated" } });
         }
       }
+      if (event === "SIGNED_OUT") {
+        setBootData({ kind: "loaded", auth: { kind: "unauthenticated" } });
+      }
     });
 
     return data.subscription.unsubscribe;
