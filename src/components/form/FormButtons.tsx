@@ -4,14 +4,16 @@ import { ReactNode } from "react";
 
 type FormButtonsProps = {
   submitText?: string;
+  submitHidden?: boolean;
   children?: ReactNode;
-  onCancel: () => void;
+  onCancel?: () => void;
   submitting?: boolean;
   disabled?: boolean;
 };
 
 export function FormButtons({
   submitText = "Save",
+  submitHidden = false,
   children,
   onCancel,
   submitting,
@@ -19,18 +21,22 @@ export function FormButtons({
 }: FormButtonsProps) {
   return (
     <Flex mt="lg" columnGap={5}>
-      <Button
-        type="button"
-        onClick={onCancel}
-        variant="outline"
-        disabled={disabled}
-      >
-        Cancel
-      </Button>
+      {onCancel && (
+        <Button
+          type="button"
+          onClick={onCancel}
+          variant="outline"
+          disabled={disabled}
+        >
+          Cancel
+        </Button>
+      )}
       {children}
-      <Button type="submit" loading={submitting} disabled={disabled}>
-        {submitText}
-      </Button>
+      {!submitHidden && (
+        <Button type="submit" loading={submitting} disabled={disabled}>
+          {submitText}
+        </Button>
+      )}
     </Flex>
   );
 }

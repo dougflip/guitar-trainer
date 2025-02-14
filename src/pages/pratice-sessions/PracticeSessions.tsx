@@ -9,7 +9,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   getTimeForPracticeSession,
   secondsToApproximateMinutes,
@@ -18,6 +18,7 @@ import { practiceSessionQueries, usePracticeSessionDelete } from "@/queries";
 
 import { PracticeSessionOwner } from "@/core/practice-session";
 import { RemoteData } from "@/components/remote-data/RemoteData";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -27,7 +28,7 @@ import { useState } from "react";
  */
 export function PracticeSessions() {
   const nav = useNavigate();
-  const { auth } = useRouteContext({ from: "__root__" });
+  const { user } = useAuthenticatedUser();
   const [opened, { open, close }] = useDisclosure(false);
   const [deleteId, setDeleteId] = useState<number>(-1);
   const [sessionFilter, setSessionFilter] =
@@ -35,7 +36,7 @@ export function PracticeSessions() {
 
   const remoteSessions = useQuery(
     practiceSessionQueries.listFiltered({
-      currentUserId: auth.kind === "authenticated" ? auth.user.id : "",
+      currentUserId: user.id,
       owner: sessionFilter,
     }),
   );
@@ -128,16 +129,18 @@ export function PracticeSessions() {
                       >
                         <IconEdit />
                       </ActionIcon>
-                      <ActionIcon
-                        onClick={() => {
-                          setDeleteId(session.id);
-                          open();
-                        }}
-                        variant="outline"
-                        color="red"
-                      >
-                        <IconTrash />
-                      </ActionIcon>
+                      {user.id === session.created_user && (
+                        <ActionIcon
+                          onClick={() => {
+                            setDeleteId(session.id);
+                            open();
+                          }}
+                          variant="outline"
+                          color="red"
+                        >
+                          <IconTrash />
+                        </ActionIcon>
+                      )}
                     </Flex>
                   </Table.Td>
                 </Table.Tr>

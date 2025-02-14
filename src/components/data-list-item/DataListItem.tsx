@@ -9,8 +9,8 @@ export type DataListItemProps = {
   symbol: ReactNode;
   title: ReactNode;
   description: ReactNode;
-  onEdit: () => void;
-  onRemove: () => void;
+  onEdit?: () => void;
+  onRemove?: () => void;
 };
 
 export function DataListItem({
@@ -30,12 +30,16 @@ export function DataListItem({
         </Text>
       </div>
       <div className="data-list-item-actions">
-        <ActionIcon onClick={onEdit} variant="outline">
-          <IconEdit />
-        </ActionIcon>
-        <ActionIcon onClick={onRemove} variant="outline" color="red">
-          <IconTrash />
-        </ActionIcon>
+        {onEdit && (
+          <ActionIcon onClick={onEdit} variant="outline">
+            <IconEdit />
+          </ActionIcon>
+        )}
+        {onRemove && (
+          <ActionIcon onClick={onRemove} variant="outline" color="red">
+            <IconTrash />
+          </ActionIcon>
+        )}
       </div>
     </div>
   );
