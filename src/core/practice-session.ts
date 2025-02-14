@@ -85,7 +85,9 @@ export type ExerciseTimedPitches = {
 
 export type Exercise = ExerciseTimedPitches;
 
-export type PracticeSession = z.infer<typeof practiceSessionSchema>;
+export type PracticeSession = z.infer<typeof practiceSessionSchema> & {
+  created_user: string;
+};
 
 export function makePracticeSession(
   overrides: Partial<PracticeSession> = {},
@@ -95,6 +97,7 @@ export function makePracticeSession(
     title: "",
     description: "",
     exercises: [],
+    created_user: "",
     ...overrides,
   };
 }

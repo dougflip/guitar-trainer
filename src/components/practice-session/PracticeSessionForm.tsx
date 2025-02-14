@@ -27,6 +27,7 @@ import { makeTimedPitchesExercise } from "@/core/practice-session";
 type PracticeSessionFormProps = {
   data: PracticeSession;
   title: ReactNode;
+  canEdit: boolean;
   onSubmit: (data: PracticeSession) => void;
   onPreview: (data: PracticeSession) => void;
   onCancel: () => void;
@@ -56,6 +57,7 @@ function getExerciseListProps(exercise: Exercise): {
 export function PracticeSessionForm({
   data,
   title,
+  canEdit,
   onSubmit,
   onPreview,
   onCancel,
@@ -116,14 +118,21 @@ export function PracticeSessionForm({
               <DataListItem
                 key={index}
                 symbol={index + 1}
-                onEdit={() =>
-                  setScreenState({
-                    kind: "exercise-edit",
-                    exercise,
-                    editIndex: index,
-                  })
+                onEdit={
+                  canEdit
+                    ? () =>
+                        setScreenState({
+                          kind: "exercise-edit",
+                          exercise,
+                          editIndex: index,
+                        })
+                    : undefined
                 }
-                onRemove={() => form.removeListItem("exercises", index)}
+                onRemove={
+                  canEdit
+                    ? () => form.removeListItem("exercises", index)
+                    : undefined
+                }
                 {...getExerciseListProps(exercise)}
               />
             ))}
@@ -147,7 +156,11 @@ export function PracticeSessionForm({
             key={form.key("description")}
             {...form.getInputProps("description")}
           />
-          <FormButtons onCancel={onCancel} submitting={submitting}>
+          <FormButtons
+            onCancel={onCancel}
+            submitting={submitting}
+            submitHidden={!canEdit}
+          >
             <Button
               type="button"
               onClick={handlePlay}

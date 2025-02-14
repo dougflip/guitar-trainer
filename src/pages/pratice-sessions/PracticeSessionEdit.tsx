@@ -6,6 +6,7 @@ import { PracticeSession } from "@/core/practice-session";
 import { PracticeSessionForm } from "@/components/practice-session/PracticeSessionForm";
 import { RemoteData } from "@/components/remote-data/RemoteData";
 import clsx from "clsx";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -17,6 +18,7 @@ type ScreenState =
  * Page level component which allows a user to edit an existing practice session.
  */
 export function PracticeSessionEditPage() {
+  const { user } = useAuthenticatedUser();
   const params = useParams({ from: "/_authenticated/practice-sessions/$id/" });
   const nav = useNavigate();
   const [screenState, setScreenState] = useState<ScreenState>({ kind: "form" });
@@ -34,6 +36,7 @@ export function PracticeSessionEditPage() {
         <div>
           <PracticeSessionForm
             data={session}
+            canEdit={user.id === session.created_user}
             title="Edit Practice Session"
             onSubmit={updatePracticeSession.mutate}
             onPreview={(session) =>

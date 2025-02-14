@@ -47,6 +47,7 @@ export async function fetchPracticeSession(
 
 export async function createPracticeSession({
   id: _,
+  created_user: __,
   ...ps
 }: PracticeSession): Promise<PracticeSession> {
   const response = await supabase

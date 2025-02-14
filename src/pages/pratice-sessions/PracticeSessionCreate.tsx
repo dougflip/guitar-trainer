@@ -26,6 +26,7 @@ export function PraticeSessionCreatePage() {
   return (
     <div>
       <PracticeSessionForm
+        canEdit
         data={makePracticeSession()}
         title="Create a Practice Session"
         onSubmit={createPracticeSession.mutate}
