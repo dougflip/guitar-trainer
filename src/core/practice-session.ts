@@ -54,7 +54,9 @@ export const exerciseTimedPitchesConfigSchema = z.object({
     .refine((val) => !isNaN(val) && val >= 0 && val <= 100, {
       message: "Pitch volume should be a number between 0 and 100",
     }),
+  // TODO: notePool - remove once migrated to `notePool`
   notes: notePoolSchema,
+  notePool: notePoolSchema,
 });
 
 export const exerciseTimedPitchesSchema = z.object({
@@ -145,6 +147,7 @@ export function makeTimedPitchesExercise(
       beatsPerNote: 12,
       numberOfCycles: 1,
       notes: { kind: "circle-of-fourths" },
+      notePool: { kind: "circle-of-fourths" },
       metronomeVolume: 50,
       pitchVolume: 50,
       ...overrides,

@@ -35,10 +35,13 @@ type TimedPitchesFormProps = {
 };
 
 function mapDataToFormValues(data: ExerciseTimedPitchesConfig): FormValues {
+  // TODO: notePool - remove once migrated to `notePool`
+  const notePool = data.notePool || data.notes;
+
   return {
-    noteKind: data.notes.kind,
+    noteKind: notePool.kind,
     notesRandomize:
-      data.notes.kind === "natural-notes" ? data.notes.randomize : false,
+      notePool.kind === "natural-notes" ? notePool.randomize : false,
     ...data,
   };
 }
@@ -51,6 +54,10 @@ function mapFormValuesToData({
   return {
     ...values,
     notes:
+      noteKind === "natural-notes"
+        ? { kind: noteKind, randomize: notesRandomize }
+        : { kind: noteKind },
+    notePool:
       noteKind === "natural-notes"
         ? { kind: noteKind, randomize: notesRandomize }
         : { kind: noteKind },

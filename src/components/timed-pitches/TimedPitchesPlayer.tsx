@@ -21,7 +21,8 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   const noteIndex = useRef(-1);
   const cycleCount = useRef(0);
   const beatCount = useRef(-1);
-  const notePool = useRef(getNotePool(config.notes));
+  // TODO: notePool - remove once migrated to `notePool`
+  const notePool = useRef(getNotePool(config.notePool || config.notes));
   const [note, setNote] = useState("");
 
   useEffect(() => {
