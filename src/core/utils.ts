@@ -7,8 +7,8 @@ import { shuffle } from "remeda";
 /**
  * Returns the number of notes in a note pool.
  */
-export function getNoteCount(notes: NotePool): number {
-  switch (notes.kind) {
+export function getNoteCount(notePool: NotePool): number {
+  switch (notePool.kind) {
     case "circle-of-fourths":
       return cycle4Notes.length;
     case "circle-of-fifths":
@@ -76,7 +76,7 @@ export function secondsToApproximateMinutes(seconds: Seconds): string {
  */
 export function getTimeForSingleExercise({ config }: Exercise): Seconds {
   const oneNoteLength = (60 / config.tempo) * config.beatsPerNote;
-  return oneNoteLength * getNoteCount(config.notes) * config.numberOfCycles;
+  return oneNoteLength * getNoteCount(config.notePool) * config.numberOfCycles;
 }
 
 /**

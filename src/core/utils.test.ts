@@ -16,7 +16,7 @@ describe("utils", () => {
         tempo: 60,
         beatsPerNote: 4,
         numberOfCycles: 1,
-        notes: { kind: "circle-of-fourths" },
+        notePool: { kind: "circle-of-fourths" },
       });
 
       expect(getTimeForSingleExercise(exercise)).toBe(48);
@@ -27,7 +27,7 @@ describe("utils", () => {
         tempo: 120,
         beatsPerNote: 4,
         numberOfCycles: 3,
-        notes: { kind: "circle-of-fourths" },
+        notePool: { kind: "circle-of-fourths" },
       });
 
       expect(getTimeForSingleExercise(exercise)).toBe(72);
@@ -38,7 +38,7 @@ describe("utils", () => {
         tempo: 60,
         beatsPerNote: 2,
         numberOfCycles: 2,
-        notes: { kind: "circle-of-fourths" },
+        notePool: { kind: "circle-of-fourths" },
       });
 
       expect(getTimeForSingleExercise(exercise)).toBe(48);
@@ -53,19 +53,19 @@ describe("utils", () => {
             tempo: 60,
             beatsPerNote: 4,
             numberOfCycles: 1,
-            notes: { kind: "circle-of-fourths" },
+            notePool: { kind: "circle-of-fourths" },
           }),
           makeTimedPitchesExercise({
             tempo: 120,
             beatsPerNote: 4,
             numberOfCycles: 3,
-            notes: { kind: "circle-of-fourths" },
+            notePool: { kind: "circle-of-fourths" },
           }),
           makeTimedPitchesExercise({
             tempo: 60,
             beatsPerNote: 2,
             numberOfCycles: 2,
-            notes: { kind: "circle-of-fourths" },
+            notePool: { kind: "circle-of-fourths" },
           }),
         ],
       });
