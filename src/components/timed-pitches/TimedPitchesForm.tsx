@@ -1,18 +1,32 @@
 import {
-  Exercise,
-  ExerciseTimedPitchesConfig,
-  exerciseTimedPitchesConfigSchema,
-} from "@/core/practice-session";
-import {
+  Checkbox,
   Input,
   SegmentedControl,
   TextInput,
   Textarea,
   Title,
 } from "@mantine/core";
+import {
+  Exercise,
+  ExerciseTimedPitchesConfig,
+  exerciseTimedPitchesConfigSchema,
+  notePoolKinds,
+} from "@/core/practice-session";
 import { useForm, zodResolver } from "@mantine/form";
 
 import { FormButtons } from "@/components/form/FormButtons";
+import { z } from "zod";
+
+const formSchemaValues = z.object({
+  noteKind: z.enum(notePoolKinds),
+  notesRandomize: z.boolean(),
+});
+
+const formSchema = formSchemaValues.merge(
+  exerciseTimedPitchesConfigSchema.omit({ notes: true }),
+);
+
+type FormValues = z.infer<typeof formSchema>;
 
 type TimedPitchesFormProps = {
   data: Extract<Exercise, { type: "timed-pitches" }>;
@@ -20,23 +34,43 @@ type TimedPitchesFormProps = {
   onCancel: () => void;
 };
 
+function mapDataToFormValues(data: ExerciseTimedPitchesConfig): FormValues {
+  return {
+    noteKind: data.notes.kind,
+    notesRandomize:
+      data.notes.kind === "natural-notes" ? data.notes.randomize : false,
+    ...data,
+  };
+}
+
+function mapFormValuesToData({
+  noteKind,
+  notesRandomize,
+  ...values
+}: FormValues): ExerciseTimedPitchesConfig {
+  return {
+    ...values,
+    notes:
+      noteKind === "natural-notes"
+        ? { kind: noteKind, randomize: notesRandomize }
+        : { kind: noteKind },
+  };
+}
+
 export function TimedPitchesForm({
   data,
   onSubmit,
   onCancel,
 }: TimedPitchesFormProps) {
   const form = useForm({
-    initialValues: { ...data.config },
-    validate: zodResolver(exerciseTimedPitchesConfigSchema),
+    initialValues: mapDataToFormValues(data.config),
+    validate: zodResolver(formSchema),
   });
 
-  const handleSubmit = (formData: ExerciseTimedPitchesConfig) => {
+  const handleSubmit = (formData: FormValues) => {
     onSubmit({
       type: "timed-pitches",
-      config: {
-        ...data.config,
-        ...formData,
-      },
+      config: mapFormValuesToData(formData),
     });
   };
 
@@ -65,10 +99,20 @@ export function TimedPitchesForm({
             data={[
               { value: "circle-of-fourths", label: "Circle of 4ths" },
               { value: "circle-of-fifths", label: "Circle of 5ths" },
+              { value: "natural-notes", label: "Natural Notes" },
             ]}
-            key={form.key("notes.kind")}
-            {...form.getInputProps("notes.kind")}
+            key={form.key("noteKind")}
+            {...form.getInputProps("noteKind")}
           />
+          {form.values.noteKind === "natural-notes" && (
+            <Checkbox
+              label="Randomize"
+              description="Randomize the order of the natural notes from A to G"
+              my="md"
+              key={form.key("notesRandomize")}
+              {...form.getInputProps("notesRandomize")}
+            />
+          )}
         </Input.Wrapper>
         <TextInput
           withAsterisk

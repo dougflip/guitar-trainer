@@ -80,6 +80,19 @@ export const cycle5Notes: Readonly<string[]> = [
 ];
 
 /**
+ * The natural notes starting at C (no sharps or flats).
+ */
+export const naturalNotes: Readonly<string[]> = [
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "A",
+  "B",
+];
+
+/**
  * Returns a random note from the chromatic scale.
  *
  * We'll eventually want options to exclude certain notes, or to limit the range.

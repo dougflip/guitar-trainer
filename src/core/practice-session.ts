@@ -9,9 +9,16 @@ export type PracticeSessionFilters = {
   owner: PracticeSessionOwner;
 };
 
+export const notePoolKinds = [
+  "circle-of-fourths",
+  "circle-of-fifths",
+  "natural-notes",
+] as const;
+
 export const notePoolSchema = z.union([
-  z.object({ kind: z.literal("circle-of-fourths") }),
-  z.object({ kind: z.literal("circle-of-fifths") }),
+  z.object({ kind: z.literal(notePoolKinds[0]) }),
+  z.object({ kind: z.literal(notePoolKinds[1]) }),
+  z.object({ kind: z.literal(notePoolKinds[2]), randomize: z.boolean() }),
 ]);
 
 export const exerciseTimedPitchesConfigSchema = z.object({
