@@ -1,6 +1,8 @@
 import { Exercise, NotePool, PracticeSession } from "@/core/practice-session";
 import { Minutes, Seconds } from "@/core/base";
-import { cycle4Notes, cycle5Notes } from "@/core/notes";
+import { cycle4Notes, cycle5Notes, naturalNotes } from "@/core/notes";
+
+import { shuffle } from "remeda";
 
 /**
  * Returns the number of notes in a note pool.
@@ -11,6 +13,8 @@ export function getNoteCount(notes: NotePool): number {
       return cycle4Notes.length;
     case "circle-of-fifths":
       return cycle5Notes.length;
+    case "natural-notes":
+      return naturalNotes.length;
   }
 }
 
@@ -23,6 +27,8 @@ export function getNotePool(notes: NotePool): Readonly<string[]> {
       return cycle4Notes;
     case "circle-of-fifths":
       return cycle5Notes;
+    case "natural-notes":
+      return notes.randomize ? shuffle(naturalNotes) : naturalNotes;
   }
 }
 

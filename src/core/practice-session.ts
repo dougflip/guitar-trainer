@@ -9,9 +9,16 @@ export type PracticeSessionFilters = {
   owner: PracticeSessionOwner;
 };
 
+export const notePoolKinds = [
+  "circle-of-fourths",
+  "circle-of-fifths",
+  "natural-notes",
+] as const;
+
 export const notePoolSchema = z.union([
-  z.object({ kind: z.literal("circle-of-fourths") }),
-  z.object({ kind: z.literal("circle-of-fifths") }),
+  z.object({ kind: z.literal(notePoolKinds[0]) }),
+  z.object({ kind: z.literal(notePoolKinds[1]) }),
+  z.object({ kind: z.literal(notePoolKinds[2]), randomize: z.boolean() }),
 ]);
 
 export const exerciseTimedPitchesConfigSchema = z.object({
@@ -47,7 +54,9 @@ export const exerciseTimedPitchesConfigSchema = z.object({
     .refine((val) => !isNaN(val) && val >= 0 && val <= 100, {
       message: "Pitch volume should be a number between 0 and 100",
     }),
+  // TODO: notePool - remove once migrated to `notePool`
   notes: notePoolSchema,
+  notePool: notePoolSchema,
 });
 
 export const exerciseTimedPitchesSchema = z.object({
@@ -138,6 +147,7 @@ export function makeTimedPitchesExercise(
       beatsPerNote: 12,
       numberOfCycles: 1,
       notes: { kind: "circle-of-fourths" },
+      notePool: { kind: "circle-of-fourths" },
       metronomeVolume: 50,
       pitchVolume: 50,
       ...overrides,
