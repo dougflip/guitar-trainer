@@ -23,7 +23,8 @@ const formSchemaValues = z.object({
 });
 
 const formSchema = formSchemaValues.merge(
-  exerciseTimedPitchesConfigSchema.omit({ notes: true }),
+  // TODO: notePool - remove once migrated to `notePool`
+  exerciseTimedPitchesConfigSchema.omit({ notes: true, notePool: true }),
 );
 
 type FormValues = z.infer<typeof formSchema>;
@@ -34,15 +35,18 @@ type TimedPitchesFormProps = {
   onCancel: () => void;
 };
 
-function mapDataToFormValues(data: ExerciseTimedPitchesConfig): FormValues {
+function mapDataToFormValues({
+  notes,
+  notePool,
+  ...data
+}: ExerciseTimedPitchesConfig): FormValues {
   // TODO: notePool - remove once migrated to `notePool`
-  const notePool = data.notePool || data.notes;
+  const np = notePool || notes;
 
   return {
-    noteKind: notePool.kind,
-    notesRandomize:
-      notePool.kind === "natural-notes" ? notePool.randomize : false,
     ...data,
+    noteKind: np.kind,
+    notesRandomize: np.kind === "natural-notes" ? np.randomize : false,
   };
 }
 
