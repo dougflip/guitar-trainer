@@ -1,11 +1,12 @@
 import "./TimedPitchesPlayer.css";
 
-import { Flex, Title } from "@mantine/core";
+import { Button, Flex, Title } from "@mantine/core";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import clsx from "clsx";
-import { createMetronome } from "@/core/sound/metronome";
+// import { createMetronome } from "@/core/sound/metronome";
+import { createMetronome } from "@/core/sound/claude-metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 import { getNotePool } from "@/core/utils";
 import { noteFrequencies } from "@/core/notes";
@@ -18,9 +19,7 @@ type TimedPitchesPlayerProps = {
 function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   // default the screen to "empty" state
   // we use the metronome to sync state changes and we want to initialize on the first beat
-  const noteIndex = useRef(-1);
-  const cycleCount = useRef(0);
-  const beatCount = useRef(-1);
+  const metronomeRef = useRef<ReturnType<typeof createMetronome> | null>(null);
   const notePool = useRef(getNotePool(config.notePool));
   const [note, setNote] = useState("");
 
@@ -28,42 +27,58 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
     const pitchGenerator = createPitchGenerator();
     const metronome = createMetronome({
       tempo: Math.round(config.tempo),
-      onBeatEnd: () => {
-        beatCount.current += 1;
-        // check if we should advance the note based on beat number
-        if (beatCount.current % config.beatsPerNote !== 0) {
-          return;
-        }
+      beatsPerBar: 4,
+      volume: 50,
+      // see if we can push more down into the metronome
+      // events:
+      //  - one for when a note should change - what would the generic term be?
+      //  - one for when it "repeats" based on the config?
+      //  - onEnd: inform the metronome of total beats and it can fire an event
+      //            and clean itself up after that many beats
+      // Basically push down all of these decisions to the metronome so it can alert
+      // consumers when they happen
+      // Just need to think of good names for these things
+      // But then the components become much simpler
+      onBeatStart: ({ totalBeats }) => {
+        // Check if the current beat is the start of a note interval
+        if ((totalBeats - 1) % config.beatsPerNote === 0) {
+          // Calculate the note index based on the total beats
+          const noteIndex =
+            Math.floor((totalBeats - 1) / config.beatsPerNote) %
+            notePool.current.length;
 
-        noteIndex.current =
-          noteIndex.current < 0 ||
-          noteIndex.current >= notePool.current.length - 1
-            ? 0
-            : noteIndex.current + 1;
+          // Determine the current cycle
+          const cycleIndex = Math.floor(
+            (totalBeats - 1) / (config.beatsPerNote * notePool.current.length),
+          );
 
-        // check if we are starting a new cycle
-        if (noteIndex.current === 0) {
-          // cycles are 1 based, so the first cycle is 1!
-          cycleCount.current += 1;
-          if (cycleCount.current > config.numberOfCycles) {
+          // End the exercise if the cycle limit is reached
+          if (cycleIndex >= config.numberOfCycles) {
             onEnd();
             return;
           }
-        }
 
-        const currentNote = notePool.current[noteIndex.current];
-        setNote(currentNote);
-        pitchGenerator.play({
-          frequency: noteFrequencies[currentNote],
-          duration: 750,
-          volume: 0.5,
-        });
+          // Get the current note from the note pool
+          const currentNote = notePool.current[noteIndex];
+
+          // Update the state with the current note
+          setNote(currentNote);
+
+          // Play the note using the pitch generator
+          pitchGenerator.play({
+            frequency: noteFrequencies[currentNote],
+            duration: 750, // Adjust duration as needed
+            volume: 0.5, // Adjust volume as needed
+          });
+        }
       },
     });
 
+    metronomeRef.current = metronome;
     metronome.start();
 
     return () => {
+      metronomeRef.current = null;
       metronome.stop();
       pitchGenerator.dispose();
     };
