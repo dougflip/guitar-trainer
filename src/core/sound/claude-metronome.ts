@@ -35,6 +35,8 @@ type MetronomeState = {
   lookaheadMs: number; // How far ahead to schedule audio (in milliseconds)
 };
 
+const noop = () => {};
+
 export function createMetronome(config: MetronomeConfig) {
   const state: MetronomeState = {
     playbackState: "stopped",
@@ -50,7 +52,7 @@ export function createMetronome(config: MetronomeConfig) {
   let tempo = config.tempo;
   let beatsPerBar = config.beatsPerBar;
   let volume = config.volume / 100; // Convert to 0-1 range
-  let onBeatStart = config.onBeatStart || ((event: BeatEvent) => {});
+  let onBeatStart = config.onBeatStart || noop;
   let maxBeatsConfig = config.maxBeats || null;
   let beatIntervalConfig = config.beatInterval || null;
 
@@ -268,7 +270,7 @@ export function createMetronome(config: MetronomeConfig) {
     }
 
     if (newConfig.onBeatStart !== undefined) {
-      onBeatStart = newConfig.onBeatStart || ((event: BeatEvent) => {});
+      onBeatStart = newConfig.onBeatStart || noop;
     }
 
     if (newConfig.maxBeats !== undefined) {
