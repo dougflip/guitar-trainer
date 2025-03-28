@@ -5,7 +5,6 @@ import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import clsx from "clsx";
-// import { createMetronome } from "@/core/sound/metronome";
 import { createMetronome } from "@/core/sound/claude-metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 import { getNotePool } from "@/core/utils";
@@ -18,8 +17,6 @@ type TimedPitchesPlayerProps = {
 
 function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   // default the screen to "empty" state
-  // we use the metronome to sync state changes and we want to initialize on the first beat
-  const metronomeRef = useRef<ReturnType<typeof createMetronome> | null>(null);
   const notePool = useRef(getNotePool(config.notePool));
   const [note, setNote] = useState("");
 
@@ -32,30 +29,27 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
       maxBeats: {
         count:
           config.numberOfCycles * config.beatsPerNote * notePool.current.length,
-        onEnd: onEnd,
+        onEnd,
       },
       beatInterval: {
         count: config.beatsPerNote,
         onBeatInterval: ({ currentInterval }) => {
           const currentNote =
             notePool.current[currentInterval % notePool.current.length];
-          setNote(currentNote);
 
-          // Play the note using the pitch generator
+          setNote(currentNote);
           pitchGenerator.play({
             frequency: noteFrequencies[currentNote],
-            duration: 750, // Adjust duration as needed
-            volume: 0.5, // Adjust volume as needed
+            duration: 750,
+            volume: 0.5,
           });
         },
       },
     });
 
-    metronomeRef.current = metronome;
     metronome.start();
 
     return () => {
-      metronomeRef.current = null;
       metronome.stop();
       pitchGenerator.dispose();
     };
