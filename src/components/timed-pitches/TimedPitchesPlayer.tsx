@@ -35,13 +35,9 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
           config.numberOfCycles * config.beatsPerNote * notePool.current.length,
         onEnd,
       },
-      onBeatStart: ({ beatNumber }) => {
-        console.log("Beat number:", beatNumber);
-      },
       beatInterval: {
         count: config.beatsPerNote,
         onBeatInterval: ({ currentInterval }) => {
-          console.log(currentInterval);
           const currentNote =
             notePool.current[currentInterval % notePool.current.length];
 
