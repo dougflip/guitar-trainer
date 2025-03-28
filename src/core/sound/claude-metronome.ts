@@ -1,7 +1,16 @@
+type MaxBeatsConfig = {
+  count: number;
+  onEnd?: () => void;
+};
 type BeatEvent = {
   beatNumber: number; // Current beat in the bar (1-based)
   time: number; // Audio context time
   totalBeats: number; // Total beats since metronome started
+};
+
+type BeatIntervalConfig = {
+  count: number;
+  onBeatInterval: (event: { currentInterval: number }) => void;
 };
 
 type MetronomeConfig = {
@@ -9,6 +18,8 @@ type MetronomeConfig = {
   beatsPerBar: number;
   volume: number; // 0-100
   onBeatStart?: (event: BeatEvent) => void;
+  maxBeats?: MaxBeatsConfig;
+  beatInterval?: BeatIntervalConfig;
 };
 
 type PlaybackState = "playing" | "stopped" | "paused";
@@ -17,6 +28,7 @@ type MetronomeState = {
   playbackState: PlaybackState;
   currentBeat: number;
   totalBeats: number;
+  currentInterval: number;
   nextNoteTime: number;
   audioContext: AudioContext | null;
   timerID: number | null;
@@ -28,6 +40,7 @@ export function createMetronome(config: MetronomeConfig) {
     playbackState: "stopped",
     currentBeat: 0,
     totalBeats: 0,
+    currentInterval: 0,
     nextNoteTime: 0,
     audioContext: null,
     timerID: null,
@@ -38,6 +51,8 @@ export function createMetronome(config: MetronomeConfig) {
   let beatsPerBar = config.beatsPerBar;
   let volume = config.volume / 100; // Convert to 0-1 range
   let onBeatStart = config.onBeatStart || ((event: BeatEvent) => {});
+  let maxBeatsConfig = config.maxBeats || null;
+  let beatIntervalConfig = config.beatInterval || null;
 
   // Calculate beat length in seconds based on tempo (BPM)
   const getBeatLength = () => 60.0 / tempo;
@@ -95,6 +110,24 @@ export function createMetronome(config: MetronomeConfig) {
         time,
         totalBeats: state.totalBeats,
       });
+
+      // Check if we need to fire interval event
+      if (beatIntervalConfig) {
+        // For count=4, this should fire on beats 1, 5, 9, 13, etc.
+        // So we want (totalBeats - 1) % count === 0
+        // But we need to handle the first beat (totalBeats === 1) specially
+        if (
+          state.totalBeats === 1 ||
+          (state.totalBeats - 1) % beatIntervalConfig.count === 0
+        ) {
+          beatIntervalConfig.onBeatInterval({
+            currentInterval: state.currentInterval,
+          });
+
+          // Increment interval counter
+          state.currentInterval += 1;
+        }
+      }
     };
 
     // Schedule it to start and stop immediately at the exact time of the beat
@@ -114,6 +147,34 @@ export function createMetronome(config: MetronomeConfig) {
       state.nextNoteTime <
       state.audioContext.currentTime + scheduleAheadTimeSec
     ) {
+      // Check if we've reached the maximum beats
+      if (maxBeatsConfig !== null && state.totalBeats >= maxBeatsConfig.count) {
+        // Schedule the onEnd event to fire after the last beat completes
+        // We want it to fire exactly at the time when the next beat would start
+        if (state.audioContext) {
+          const endTime = state.nextNoteTime;
+
+          // Create a silent oscillator to trigger the onEnd event at the precise time
+          const endTrigger = state.audioContext.createOscillator();
+          endTrigger.frequency.value = 1; // Minimal frequency
+
+          // Set up the event to fire exactly when the last beat would end
+          endTrigger.onended = () => {
+            if (maxBeatsConfig?.onEnd) {
+              maxBeatsConfig.onEnd();
+            }
+            stop();
+          };
+
+          // Schedule it to start and stop at the end time
+          endTrigger.start(endTime);
+          endTrigger.stop(endTime + 0.001);
+        }
+
+        // Exit the scheduler loop
+        return;
+      }
+
       scheduleNote(state.nextNoteTime);
 
       // Advance beat and time
@@ -133,8 +194,10 @@ export function createMetronome(config: MetronomeConfig) {
     const audioContext = initializeAudioContext();
 
     if (state.playbackState === "stopped") {
-      // Not resuming, so reset the beat counter
+      // Not resuming, so reset the beat counters
       state.currentBeat = 0;
+      state.totalBeats = 0;
+      state.currentInterval = 0;
     }
 
     state.playbackState = "playing";
@@ -150,6 +213,7 @@ export function createMetronome(config: MetronomeConfig) {
     state.playbackState = "stopped";
     state.currentBeat = 0; // Reset beat counter
     state.totalBeats = 0; // Reset total beats counter
+    state.currentInterval = 0; // Reset interval counter
 
     if (state.timerID !== null) {
       window.clearTimeout(state.timerID);
@@ -207,6 +271,16 @@ export function createMetronome(config: MetronomeConfig) {
       onBeatStart = newConfig.onBeatStart || ((event: BeatEvent) => {});
     }
 
+    if (newConfig.maxBeats !== undefined) {
+      maxBeatsConfig = newConfig.maxBeats;
+    }
+
+    if (newConfig.beatInterval !== undefined) {
+      beatIntervalConfig = newConfig.beatInterval;
+      // Reset interval counter when changing interval configuration
+      state.currentInterval = 0;
+    }
+
     // Restart if it was playing
     if (wasPlaying) {
       start();
@@ -221,6 +295,9 @@ export function createMetronome(config: MetronomeConfig) {
     volume: volume * 100,
     currentBeat: state.currentBeat,
     totalBeats: state.totalBeats,
+    currentInterval: state.currentInterval,
+    maxBeats: maxBeatsConfig ? maxBeatsConfig.count : null,
+    beatInterval: beatIntervalConfig ? beatIntervalConfig.count : null,
   });
 
   return {

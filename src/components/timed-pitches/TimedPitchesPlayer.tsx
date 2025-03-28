@@ -1,6 +1,6 @@
 import "./TimedPitchesPlayer.css";
 
-import { Button, Flex, Title } from "@mantine/core";
+import { Flex, Title } from "@mantine/core";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
@@ -29,39 +29,16 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
       tempo: Math.round(config.tempo),
       beatsPerBar: 4,
       volume: 50,
-      // see if we can push more down into the metronome
-      // events:
-      //  - one for when a note should change - what would the generic term be?
-      //  - one for when it "repeats" based on the config?
-      //  - onEnd: inform the metronome of total beats and it can fire an event
-      //            and clean itself up after that many beats
-      // Basically push down all of these decisions to the metronome so it can alert
-      // consumers when they happen
-      // Just need to think of good names for these things
-      // But then the components become much simpler
-      onBeatStart: ({ totalBeats }) => {
-        // Check if the current beat is the start of a note interval
-        if ((totalBeats - 1) % config.beatsPerNote === 0) {
-          // Calculate the note index based on the total beats
-          const noteIndex =
-            Math.floor((totalBeats - 1) / config.beatsPerNote) %
-            notePool.current.length;
-
-          // Determine the current cycle
-          const cycleIndex = Math.floor(
-            (totalBeats - 1) / (config.beatsPerNote * notePool.current.length),
-          );
-
-          // End the exercise if the cycle limit is reached
-          if (cycleIndex >= config.numberOfCycles) {
-            onEnd();
-            return;
-          }
-
-          // Get the current note from the note pool
-          const currentNote = notePool.current[noteIndex];
-
-          // Update the state with the current note
+      maxBeats: {
+        count:
+          config.numberOfCycles * config.beatsPerNote * notePool.current.length,
+        onEnd: onEnd,
+      },
+      beatInterval: {
+        count: config.beatsPerNote,
+        onBeatInterval: ({ currentInterval }) => {
+          const currentNote =
+            notePool.current[currentInterval % notePool.current.length];
           setNote(currentNote);
 
           // Play the note using the pitch generator
@@ -70,7 +47,7 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
             duration: 750, // Adjust duration as needed
             volume: 0.5, // Adjust volume as needed
           });
-        }
+        },
       },
     });
 
