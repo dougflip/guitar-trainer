@@ -74,9 +74,9 @@ export function createMetronome(config: MetronomeConfig) {
     const gainNode = state.audioContext.createGain();
 
     // Configure oscillator
-    // Use different frequency for the first beat of the bar
-    oscillator.frequency.value =
-      state.currentBeat % beatsPerBar === 0 ? 1000 : 800;
+    // Use different frequency for the first beat of the bar (when currentBeat is 0)
+    const isFirstBeatOfBar = state.currentBeat % beatsPerBar === 0;
+    oscillator.frequency.value = isFirstBeatOfBar ? 1000 : 800;
 
     // Configure volume
     gainNode.gain.value = volume;
@@ -95,7 +95,7 @@ export function createMetronome(config: MetronomeConfig) {
 
     // Create a separate oscillator just for precise callback timing
     // Calculate the actual beat number (1-based) to pass to the callback
-    const beatNumber = state.currentBeat + 1;
+    const beatNumber = (state.currentBeat % beatsPerBar) + 1;
 
     // Create a separate oscillator just for precise callback timing
     const callbackTrigger = state.audioContext.createOscillator();
@@ -114,11 +114,11 @@ export function createMetronome(config: MetronomeConfig) {
       // Check if we need to fire interval event
       if (beatIntervalConfig) {
         // For count=4, this should fire on beats 1, 5, 9, 13, etc.
-        // So we want (totalBeats - 1) % count === 0
-        // But we need to handle the first beat (totalBeats === 1) specially
+        // We want to fire when we're on the first beat of a measure AND
+        // we've completed the right number of intervals
         if (
-          state.totalBeats === 1 ||
-          (state.totalBeats - 1) % beatIntervalConfig.count === 0
+          isFirstBeatOfBar &&
+          state.totalBeats % beatIntervalConfig.count === 1
         ) {
           beatIntervalConfig.onBeatInterval({
             currentInterval: state.currentInterval,
@@ -238,8 +238,8 @@ export function createMetronome(config: MetronomeConfig) {
   const resume = () => {
     if (state.playbackState !== "paused") return;
 
-    // Move to the next beat when resuming
-    state.currentBeat = (state.currentBeat + 1) % beatsPerBar;
+    // We don't automatically advance the beat when resuming anymore
+    // This maintains the correct position in the measure
 
     // Use start to handle the resumed state
     start();

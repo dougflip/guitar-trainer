@@ -20,9 +20,13 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   const notePool = useRef(getNotePool(config.notePool));
   const [note, setNote] = useState("");
 
+  // store a ref to the metronome so we can pause/resume
+  // eventually, I think this will move up to the parent component
+  const metronomeRef = useRef<ReturnType<typeof createMetronome> | null>(null);
+
   useEffect(() => {
     const pitchGenerator = createPitchGenerator();
-    const metronome = createMetronome({
+    metronomeRef.current = createMetronome({
       tempo: Math.round(config.tempo),
       beatsPerBar: 4,
       volume: 50,
@@ -31,9 +35,13 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
           config.numberOfCycles * config.beatsPerNote * notePool.current.length,
         onEnd,
       },
+      onBeatStart: ({ beatNumber }) => {
+        console.log("Beat number:", beatNumber);
+      },
       beatInterval: {
         count: config.beatsPerNote,
         onBeatInterval: ({ currentInterval }) => {
+          console.log(currentInterval);
           const currentNote =
             notePool.current[currentInterval % notePool.current.length];
 
@@ -47,20 +55,34 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
       },
     });
 
-    metronome.start();
+    metronomeRef.current.start();
 
     return () => {
-      metronome.stop();
+      metronomeRef.current?.stop();
+      metronomeRef.current = null;
       pitchGenerator.dispose();
     };
   }, [config, onEnd]);
+
+  function handlePauseResume() {
+    if (!metronomeRef.current) {
+      return;
+    }
+
+    return metronomeRef.current.getState().playbackState === "playing"
+      ? metronomeRef.current.pause()
+      : metronomeRef.current.resume();
+  }
 
   return (
     <Flex direction="column" align="center">
       <Title order={3} my="sm">
         {config.title}
       </Title>
-      <span className={clsx("c4p-note", { "is-invisible": !note })}>
+      <span
+        className={clsx("c4p-note", { "is-invisible": !note })}
+        onClick={handlePauseResume}
+      >
         {note || "A"}
       </span>
     </Flex>
