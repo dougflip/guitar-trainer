@@ -46,8 +46,14 @@ export function MainAppShell() {
       <AppShell.Navbar p="md">
         <NavLink
           component={Link}
-          to="/"
+          to="/practice-sessions"
           label="My Practice Sessions"
+          onClick={closeMobile}
+        />
+        <NavLink
+          component={Link}
+          to="/metronome"
+          label="Metronome"
           onClick={closeMobile}
         />
         <NavLink label="Sign Out" onClick={handleSignOut} />

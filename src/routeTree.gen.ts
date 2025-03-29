@@ -15,6 +15,7 @@ import { Route as SignInImport } from './routes/sign-in'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthenticatedPracticeSessionsIndexImport } from './routes/_authenticated/practice-sessions/index'
+import { Route as AuthenticatedMetronomeIndexImport } from './routes/_authenticated/metronome/index'
 import { Route as AuthenticatedPracticeSessionsCreateImport } from './routes/_authenticated/practice-sessions/create'
 import { Route as AuthenticatedPracticeSessionsIdIndexImport } from './routes/_authenticated/practice-sessions/$id/index'
 import { Route as AuthenticatedPracticeSessionsIdPlayImport } from './routes/_authenticated/practice-sessions/$id/play'
@@ -42,6 +43,13 @@ const AuthenticatedPracticeSessionsIndexRoute =
   AuthenticatedPracticeSessionsIndexImport.update({
     id: '/practice-sessions/',
     path: '/practice-sessions/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedMetronomeIndexRoute =
+  AuthenticatedMetronomeIndexImport.update({
+    id: '/metronome/',
+    path: '/metronome/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -98,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPracticeSessionsCreateImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/metronome/': {
+      id: '/_authenticated/metronome/'
+      path: '/metronome'
+      fullPath: '/metronome'
+      preLoaderRoute: typeof AuthenticatedMetronomeIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/practice-sessions/': {
       id: '/_authenticated/practice-sessions/'
       path: '/practice-sessions'
@@ -126,6 +141,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedPracticeSessionsCreateRoute: typeof AuthenticatedPracticeSessionsCreateRoute
+  AuthenticatedMetronomeIndexRoute: typeof AuthenticatedMetronomeIndexRoute
   AuthenticatedPracticeSessionsIndexRoute: typeof AuthenticatedPracticeSessionsIndexRoute
   AuthenticatedPracticeSessionsIdPlayRoute: typeof AuthenticatedPracticeSessionsIdPlayRoute
   AuthenticatedPracticeSessionsIdIndexRoute: typeof AuthenticatedPracticeSessionsIdIndexRoute
@@ -134,6 +150,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPracticeSessionsCreateRoute:
     AuthenticatedPracticeSessionsCreateRoute,
+  AuthenticatedMetronomeIndexRoute: AuthenticatedMetronomeIndexRoute,
   AuthenticatedPracticeSessionsIndexRoute:
     AuthenticatedPracticeSessionsIndexRoute,
   AuthenticatedPracticeSessionsIdPlayRoute:
@@ -151,6 +168,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/practice-sessions/create': typeof AuthenticatedPracticeSessionsCreateRoute
+  '/metronome': typeof AuthenticatedMetronomeIndexRoute
   '/practice-sessions': typeof AuthenticatedPracticeSessionsIndexRoute
   '/practice-sessions/$id/play': typeof AuthenticatedPracticeSessionsIdPlayRoute
   '/practice-sessions/$id': typeof AuthenticatedPracticeSessionsIdIndexRoute
@@ -161,6 +179,7 @@ export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/practice-sessions/create': typeof AuthenticatedPracticeSessionsCreateRoute
+  '/metronome': typeof AuthenticatedMetronomeIndexRoute
   '/practice-sessions': typeof AuthenticatedPracticeSessionsIndexRoute
   '/practice-sessions/$id/play': typeof AuthenticatedPracticeSessionsIdPlayRoute
   '/practice-sessions/$id': typeof AuthenticatedPracticeSessionsIdIndexRoute
@@ -172,6 +191,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/_authenticated/practice-sessions/create': typeof AuthenticatedPracticeSessionsCreateRoute
+  '/_authenticated/metronome/': typeof AuthenticatedMetronomeIndexRoute
   '/_authenticated/practice-sessions/': typeof AuthenticatedPracticeSessionsIndexRoute
   '/_authenticated/practice-sessions/$id/play': typeof AuthenticatedPracticeSessionsIdPlayRoute
   '/_authenticated/practice-sessions/$id/': typeof AuthenticatedPracticeSessionsIdIndexRoute
@@ -184,6 +204,7 @@ export interface FileRouteTypes {
     | ''
     | '/sign-in'
     | '/practice-sessions/create'
+    | '/metronome'
     | '/practice-sessions'
     | '/practice-sessions/$id/play'
     | '/practice-sessions/$id'
@@ -193,6 +214,7 @@ export interface FileRouteTypes {
     | ''
     | '/sign-in'
     | '/practice-sessions/create'
+    | '/metronome'
     | '/practice-sessions'
     | '/practice-sessions/$id/play'
     | '/practice-sessions/$id'
@@ -202,6 +224,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/sign-in'
     | '/_authenticated/practice-sessions/create'
+    | '/_authenticated/metronome/'
     | '/_authenticated/practice-sessions/'
     | '/_authenticated/practice-sessions/$id/play'
     | '/_authenticated/practice-sessions/$id/'
@@ -242,6 +265,7 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/practice-sessions/create",
+        "/_authenticated/metronome/",
         "/_authenticated/practice-sessions/",
         "/_authenticated/practice-sessions/$id/play",
         "/_authenticated/practice-sessions/$id/"
@@ -252,6 +276,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/practice-sessions/create": {
       "filePath": "_authenticated/practice-sessions/create.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/metronome/": {
+      "filePath": "_authenticated/metronome/index.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/practice-sessions/": {

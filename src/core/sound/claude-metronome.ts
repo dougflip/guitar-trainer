@@ -13,7 +13,7 @@ type BeatIntervalConfig = {
   onBeatInterval: (event: { currentInterval: number }) => void;
 };
 
-type MetronomeConfig = {
+export type MetronomeConfig = {
   tempo: number;
   beatsPerBar: number;
   volume: number; // 0-100
