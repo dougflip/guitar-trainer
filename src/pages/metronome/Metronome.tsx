@@ -11,8 +11,10 @@ import {
 import { TempoBeat } from "@/components/tempo-beat/TempoBeat";
 import { useMetronome } from "@/hooks/useMetronome";
 import { useState } from "react";
+import { useWakeLock } from "react-screen-wake-lock";
 
 export function Metronome() {
+  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
   const [activeBeat, setActiveBeat] = useState(0);
   const metronome = useMetronome({
     beatsPerBar: 4,
@@ -23,6 +25,16 @@ export function Metronome() {
     },
   });
 
+  function handlePlay() {
+    requestWakeLock();
+    metronome.start();
+  }
+
+  function handlePause() {
+    releaseWakeLock();
+    metronome.pause();
+  }
+
   const { tempo, volume, ...state } = metronome.getState();
 
   return (
@@ -32,15 +44,15 @@ export function Metronome() {
           {tempo} bpm
         </Text>
       </Center>
-      <TempoBeat beats={4} activeBeat={activeBeat} />
+      <TempoBeat totalBeats={4} activeBeat={activeBeat} />
       <Flex align="center" justify="center" my="lg">
         {state.playbackState !== "playing" && (
-          <Button onClick={metronome.start} size="xl">
+          <Button onClick={handlePlay} size="xl">
             Play
           </Button>
         )}
         {state.playbackState === "playing" && (
-          <Button onClick={metronome.pause} size="xl">
+          <Button onClick={handlePause} size="xl">
             Pause
           </Button>
         )}

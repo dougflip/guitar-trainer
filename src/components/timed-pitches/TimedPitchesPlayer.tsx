@@ -1,9 +1,10 @@
 import "./TimedPitchesPlayer.css";
 
-import { Flex, Title } from "@mantine/core";
+import { Flex, Progress, Title } from "@mantine/core";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
+import { TempoBeat } from "@/components/tempo-beat/TempoBeat";
 import clsx from "clsx";
 import { createMetronome } from "@/core/sound/claude-metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
@@ -18,6 +19,8 @@ type TimedPitchesPlayerProps = {
 function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   // default the screen to "empty" state
   const notePool = useRef(getNotePool(config.notePool));
+  const [beatNum, setBeatNum] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [note, setNote] = useState("");
 
   // store a ref to the metronome so we can pause/resume
@@ -42,12 +45,22 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
             notePool.current[currentInterval % notePool.current.length];
 
           setNote(currentNote);
+
+          setProgress(
+            ((currentInterval + 1) /
+              (config.numberOfCycles * notePool.current.length)) *
+              100,
+          );
+
           pitchGenerator.play({
             frequency: noteFrequencies[currentNote],
             duration: 750,
             volume: 0.5,
           });
         },
+      },
+      onBeatStart: ({ beatNumber }) => {
+        setBeatNum(beatNumber - 1);
       },
     });
 
@@ -72,15 +85,21 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
 
   return (
     <Flex direction="column" align="center">
-      <Title order={3} my="sm">
-        {config.title}
-      </Title>
+      <Title order={3}>{config.title}</Title>
       <span
         className={clsx("c4p-note", { "is-invisible": !note })}
         onClick={handlePauseResume}
       >
         {note || "A"}
       </span>
+      <TempoBeat activeBeat={beatNum} totalBeats={4} />
+      <Progress
+        my="md"
+        value={progress}
+        size="lg"
+        style={{ alignSelf: "stretch" }}
+        transitionDuration={200}
+      />
     </Flex>
   );
 }
