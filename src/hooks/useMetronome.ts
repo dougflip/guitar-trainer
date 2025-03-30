@@ -1,5 +1,6 @@
 import {
   MetronomeConfig,
+  MetronomeUpdateConfig,
   createMetronome,
 } from "@/core/sound/claude-metronome";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -20,7 +21,7 @@ export function useMetronome(config: UseMetronomeConfig) {
 
   return useMemo(
     () => ({
-      updateConfig: (newConfig: Partial<UseMetronomeConfig>) => {
+      updateConfig: (newConfig: Partial<MetronomeUpdateConfig>) => {
         metronome.current.updateConfig(newConfig);
         forceRender();
       },

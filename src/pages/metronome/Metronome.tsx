@@ -1,57 +1,72 @@
-import { Button, Input, Slider } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Container,
+  Flex,
+  Input,
+  Slider,
+  Text,
+} from "@mantine/core";
 
+import { TempoBeat } from "@/components/tempo-beat/TempoBeat";
 import { useMetronome } from "@/hooks/useMetronome";
+import { useState } from "react";
 
 export function Metronome() {
+  const [activeBeat, setActiveBeat] = useState(0);
   const metronome = useMetronome({
     beatsPerBar: 4,
-    tempo: 90,
+    tempo: 75,
     volume: 50,
+    onBeatStart: ({ beatNumber }) => {
+      setActiveBeat(beatNumber - 1);
+    },
   });
 
   const { tempo, volume, ...state } = metronome.getState();
 
   return (
     <div>
-      <h1>Metronome</h1>
-      <form>
-        <Input.Wrapper label="Tempo BPM" mb="xl">
-          <Slider
-            labelAlwaysOn
-            min={40}
-            max={180}
-            defaultValue={tempo}
-            onChangeEnd={(tempo) => metronome.updateConfig({ tempo })}
-            marks={[
-              { value: 40, label: "40 bpm" },
-              { value: 60, label: "60 bpm" },
-              { value: 80, label: "80 bpm" },
-              { value: 100, label: "100 bpm" },
-              { value: 120, label: "120 bpm" },
-              { value: 140, label: "140 bpm" },
-              { value: 160, label: "160 bpm" },
-              { value: 180, label: "180 bpm" },
-            ]}
-          />
-        </Input.Wrapper>
+      <Center>
+        <Text size="4rem" my="lg">
+          {tempo} bpm
+        </Text>
+      </Center>
+      <TempoBeat beats={4} activeBeat={activeBeat} />
+      <Flex align="center" justify="center" my="lg">
+        {state.playbackState !== "playing" && (
+          <Button onClick={metronome.start} size="xl">
+            Play
+          </Button>
+        )}
+        {state.playbackState === "playing" && (
+          <Button onClick={metronome.pause} size="xl">
+            Pause
+          </Button>
+        )}
+      </Flex>
+      <Container maw={400} mx="auto">
+        <form>
+          <Input.Wrapper label="Tempo" mb="xl">
+            <Slider
+              min={40}
+              max={180}
+              label={(x) => `${x} bpm`}
+              defaultValue={tempo}
+              onChangeEnd={(tempo) => metronome.updateConfig({ tempo })}
+            />
+          </Input.Wrapper>
 
-        <Input.Wrapper label="Volume" mb="xl">
-          <Slider
-            labelAlwaysOn
-            min={0}
-            max={100}
-            defaultValue={volume}
-            onChangeEnd={(volume) => metronome.updateConfig({ volume })}
-            marks={[{ value: 25 }, { value: 50 }, { value: 75 }]}
-          />
-        </Input.Wrapper>
-      </form>
-      {state.playbackState !== "playing" && (
-        <Button onClick={metronome.start}>Play</Button>
-      )}
-      {state.playbackState === "playing" && (
-        <Button onClick={metronome.pause}>Pause</Button>
-      )}
+          <Input.Wrapper label="Volume" mb="xl">
+            <Slider
+              min={0}
+              max={100}
+              defaultValue={volume}
+              onChangeEnd={(volume) => metronome.updateConfig({ volume })}
+            />
+          </Input.Wrapper>
+        </form>
+      </Container>
     </div>
   );
 }
