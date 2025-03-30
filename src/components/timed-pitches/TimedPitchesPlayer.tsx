@@ -1,6 +1,6 @@
 import "./TimedPitchesPlayer.css";
 
-import { Flex, Title } from "@mantine/core";
+import { Flex, Progress, Title } from "@mantine/core";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
@@ -20,6 +20,7 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
   // default the screen to "empty" state
   const notePool = useRef(getNotePool(config.notePool));
   const [beatNum, setBeatNum] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [note, setNote] = useState("");
 
   // store a ref to the metronome so we can pause/resume
@@ -44,6 +45,13 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
             notePool.current[currentInterval % notePool.current.length];
 
           setNote(currentNote);
+
+          setProgress(
+            ((currentInterval + 1) /
+              (config.numberOfCycles * notePool.current.length)) *
+              100,
+          );
+
           pitchGenerator.play({
             frequency: noteFrequencies[currentNote],
             duration: 750,
@@ -85,6 +93,13 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
         {note || "A"}
       </span>
       <TempoBeat activeBeat={beatNum} totalBeats={4} />
+      <Progress
+        my="md"
+        value={progress}
+        size="lg"
+        style={{ alignSelf: "stretch" }}
+        transitionDuration={200}
+      />
     </Flex>
   );
 }
