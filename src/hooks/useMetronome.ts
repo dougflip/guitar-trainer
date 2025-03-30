@@ -1,25 +1,48 @@
-import { MetronomeConfig, createMetronome } from "@/core/sound/metronome";
+import {
+  MetronomeConfig,
+  MetronomeUpdateConfig,
+  createMetronome,
+} from "@/core/sound/claude-metronome";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { useEffect } from "react";
-
-export type UseMetronomeConfig = MetronomeConfig & { enabled: boolean };
+export type UseMetronomeConfig = MetronomeConfig;
 
 /**
- * Creates a metronome that automatically starts when rendered.
+ * Creates a metronome that triggers state updates whenever it is updated.
  */
-export function useMetronome({
-  enabled,
-  tempo,
-  beatsPerBar,
-}: UseMetronomeConfig) {
+export function useMetronome(config: UseMetronomeConfig) {
+  const [, updateState] = useState({});
+  const forceRender = useCallback(() => updateState({}), []);
+  const metronome = useRef(createMetronome(config));
+
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+    return () => metronome.current.stop();
+  }, []);
 
-    const m = createMetronome({ tempo, beatsPerBar });
-    m.start();
-
-    return m.stop;
-  }, [tempo, beatsPerBar, enabled]);
+  return useMemo(
+    () => ({
+      updateConfig: (newConfig: Partial<MetronomeUpdateConfig>) => {
+        metronome.current.updateConfig(newConfig);
+        forceRender();
+      },
+      getState: () => metronome.current.getState(),
+      start: () => {
+        metronome.current.start();
+        forceRender();
+      },
+      stop: () => {
+        metronome.current.stop();
+        forceRender();
+      },
+      pause: () => {
+        metronome.current.pause();
+        forceRender();
+      },
+      resume: () => {
+        metronome.current.resume();
+        forceRender();
+      },
+    }),
+    [metronome.current],
+  );
 }

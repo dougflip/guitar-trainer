@@ -13,13 +13,18 @@ type BeatIntervalConfig = {
   onBeatInterval: (event: { currentInterval: number }) => void;
 };
 
-type MetronomeConfig = {
+export type MetronomeConfig = {
   tempo: number;
   beatsPerBar: number;
   volume: number; // 0-100
   onBeatStart?: (event: BeatEvent) => void;
   maxBeats?: MaxBeatsConfig;
   beatInterval?: BeatIntervalConfig;
+};
+
+export type MetronomeUpdateConfig = {
+  tempo?: number;
+  volume?: number;
 };
 
 type PlaybackState = "playing" | "stopped" | "paused";
@@ -247,45 +252,16 @@ export function createMetronome(config: MetronomeConfig) {
     start();
   };
 
-  // Update configuration
-  const updateConfig = (newConfig: Partial<MetronomeConfig>) => {
-    const wasPlaying = state.playbackState === "playing";
-
-    // Stop if playing
-    if (wasPlaying) {
-      stop();
-    }
-
-    // Update values
+  /**
+   * Update specified values of the metronome after creation.
+   */
+  const updateConfig = (newConfig: Partial<MetronomeUpdateConfig>) => {
     if (newConfig.tempo !== undefined) {
       tempo = newConfig.tempo;
     }
 
-    if (newConfig.beatsPerBar !== undefined) {
-      beatsPerBar = newConfig.beatsPerBar;
-    }
-
     if (newConfig.volume !== undefined) {
       volume = newConfig.volume / 100;
-    }
-
-    if (newConfig.onBeatStart !== undefined) {
-      onBeatStart = newConfig.onBeatStart || noop;
-    }
-
-    if (newConfig.maxBeats !== undefined) {
-      maxBeatsConfig = newConfig.maxBeats;
-    }
-
-    if (newConfig.beatInterval !== undefined) {
-      beatIntervalConfig = newConfig.beatInterval;
-      // Reset interval counter when changing interval configuration
-      state.currentInterval = 0;
-    }
-
-    // Restart if it was playing
-    if (wasPlaying) {
-      start();
     }
   };
 
