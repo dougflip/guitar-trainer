@@ -32,7 +32,7 @@ export function Metronome() {
           {tempo} bpm
         </Text>
       </Center>
-      <TempoBeat beats={4} activeBeat={activeBeat} />
+      <TempoBeat totalBeats={4} activeBeat={activeBeat} />
       <Flex align="center" justify="center" my="lg">
         {state.playbackState !== "playing" && (
           <Button onClick={metronome.start} size="xl">

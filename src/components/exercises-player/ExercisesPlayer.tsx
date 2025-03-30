@@ -40,7 +40,7 @@ export function ExercisesPlayer({ exercises, onEnd }: ExercisesPlayerProps) {
         config={exercises[currentExerciseIndex].config}
         onEnd={handleOnExerciseEnd}
       />
-      <Flex justify="space-between" gap="sm">
+      <Flex justify="space-between" gap="sm" my="md">
         <ActionIcon
           onClick={() => setCurrentExerciseIndex((x) => x - 1)}
           disabled={currentExerciseIndex === 0}
