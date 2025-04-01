@@ -21,12 +21,11 @@ updates:
           - "oxlint"
           - "vite*"
           - "typescript*"
+        update-types:
+          - "minor"
+          - "patch"
     pull-request-branch-name:
       separator: "-"
     commit-message:
       prefix: "deps"
       include: "scope"
-    # Skip major version updates
-    ignore:
-      - dependency-type: "all"
-        update-types: ["major"]
