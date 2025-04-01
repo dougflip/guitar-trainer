@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Dev dependencies PR for vite* and typescript* packages
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Whitelist all of the deps that dependabot should update
+    # May actually reverse this in the end if this approach works.
+    allow:
+      - dependency-name: "concurrently"
+      - dependency-name: "oxlint"
+      - dependency-name: "vite*"
+      - dependency-name: "typescript*"
+
+    # now group the "allowed" deps so we can have fewer PRs
+    groups:
+      dev-deps:
+        patterns:
+          - "concurrently"
+          - "oxlint"
+          - "vite*"
+          - "typescript*"
+    pull-request-branch-name:
+      separator: "-"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Skip major version updates
+    ignore:
+      - dependency-type: "all"
+        update-types: ["major"]
