@@ -15,6 +15,7 @@
     "test:ci": "CI=1 TZ=UTC vitest run"
   },
   "dependencies": {
+    "@dougflip/metronome": "^0.0.3",
     "@mantine/core": "^7.17.2",
     "@mantine/form": "^7.17.2",
     "@mantine/hooks": "^7.15.2",

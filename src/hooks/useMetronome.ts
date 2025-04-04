@@ -2,7 +2,7 @@ import {
   MetronomeConfig,
   MetronomeUpdateConfig,
   createMetronome,
-} from "@/core/sound/claude-metronome";
+} from "@dougflip/metronome";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export type UseMetronomeConfig = MetronomeConfig;
