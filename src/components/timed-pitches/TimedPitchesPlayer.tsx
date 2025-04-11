@@ -1,12 +1,12 @@
 import "./TimedPitchesPlayer.css";
 
 import { Flex, Progress, Title } from "@mantine/core";
+import { Metronome, createMetronome } from "@dougflip/metronome";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { ExerciseTimedPitchesConfig } from "@/core/practice-session";
 import { TempoBeat } from "@/components/tempo-beat/TempoBeat";
 import clsx from "clsx";
-import { createMetronome } from "@/core/sound/claude-metronome";
 import { createPitchGenerator } from "@/core/sound/pitch-generator";
 import { getNotePool } from "@/core/utils";
 import { noteFrequencies } from "@/core/notes";
@@ -25,7 +25,7 @@ function TimedPitchesPlayerRaw({ config, onEnd }: TimedPitchesPlayerProps) {
 
   // store a ref to the metronome so we can pause/resume
   // eventually, I think this will move up to the parent component
-  const metronomeRef = useRef<ReturnType<typeof createMetronome> | null>(null);
+  const metronomeRef = useRef<Metronome | null>(null);
 
   useEffect(() => {
     const pitchGenerator = createPitchGenerator();
